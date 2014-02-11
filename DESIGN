@@ -32,7 +32,7 @@ List Based
 
   int meminit(long n_bytes, unsigned flags, int parm1, int *parm2)
     check flags
-    set 0x0 in memory block to n_bytes
+    set pointers to denote entire memory segment
     
     
     
@@ -60,5 +60,5 @@ List Based
       global ptr = block
       return block
       
-      
+  
     
