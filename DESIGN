@@ -1,1 +1,31 @@
+Buddy Allocator
+  
+  int meminit(long n_bytes, unsigned flags, int parm1, int *parm2)
+    If n_bytes is not power of 2 && (flags==0x1)
+      return error
+    else we will init
+      set pointers to denote entire memory segment
+      initialize one big block to not in use
+      
+  void *memalloc (int handle, long n_bytes) 
+    if n_bytes is not power of 2
+      return error
+    for each block in bitmap
+      if buddy in use && will fit
+        set region in use
+        return block ptr
+      else
+        memalloc(handle, 2^(log2(bytes)+1))   //check again for larger space
+  
+  void memfree (void *region) 
+    if regions buddy is free
+      parent = region + buddy
+      parent = free
+    else
+      memfree(2^log2(bytes)+1)    //free next power of 2 up
+      
+      
 
+
+
+List Based
