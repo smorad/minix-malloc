@@ -29,3 +29,36 @@ Buddy Allocator
 
 
 List Based
+
+  int meminit(long n_bytes, unsigned flags, int parm1, int *parm2)
+    check flags
+    set 0x0 in memory block to n_bytes
+    
+    
+    
+  void *memalloc (int handle, long n_bytes)
+    call respective allocation mode handler
+    allocate result of allocation mode handler
+    
+    
+  mode handlers
+  
+  unsigned best_fit(long n_bytes)   //returns a pointer to a free block
+    for each block:
+      if block > n_bytes && block < best
+        best = block
+    return block
+    
+  unsigned first_fit(long n_bytes)
+    for each block:
+      if block >= n_bytes
+        return block
+  
+  unsigned next_fit(long n_bytes)
+    for each block:
+      if block >= n_bytes
+      global ptr = block
+      return block
+      
+      
+    
