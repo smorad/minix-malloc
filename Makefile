@@ -10,4 +10,5 @@ alloc.o: alloc.c
 test: test.o alloc.h libmem.a
 	gcc -Llibmem.a -o test test.c alloc.c alloc.h
 
-	
+clean:
+	rm *.o *.a	
