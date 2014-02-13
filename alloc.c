@@ -115,7 +115,7 @@ long pow2(int parm1){
 }
 
 int buddy_init(long n_bytes, int parm1){	
-	if (power2(n_bytes)!=0){
+	if (!power2(n_bytes)){
 		printf("\n%lu: not a pow2\n", n_bytes);
 		return -1;
 	}
