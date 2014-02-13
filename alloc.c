@@ -158,7 +158,7 @@ void* buddy_memalloc(long n_bytes, int handle){
       	else{
       		// Marks all as taken
 	      	unsigned j;
-		for(j = bitmap_loc; j > (bitmap_loc - curr_size); j--){
+		for(j = bitmap_loc; j < (bitmap_loc + curr_size); j++){
 			mp.bitmap[j] = 1;
 		}
       	}
