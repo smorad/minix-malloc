@@ -142,7 +142,7 @@ void* buddy_memalloc(long n_bytes, int handle){
 	// Set curr_size = to a power of 2 that is >= n_bytes
 	long curr_size = 1;
 	while(curr_size <= n_bytes) curr_size *= 2;
-	
+	printf("Curr_size first: %lu\n", curr_size);
 	// Divide by the minimum page size
 	// Will use this to pass to the areaa_free detector
 	// This is in blocks
