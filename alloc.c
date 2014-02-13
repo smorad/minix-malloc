@@ -107,13 +107,20 @@ int power2(long x){
 	return (x & (x-1))==0;
 }
 
+long pow2(int parm1){
+	int i;
+	int rv = 1;
+	for(i = 0; i < parm1; i++) rv *= 2;
+	return rv;
+}
+
 int buddy_init(long n_bytes, int parm1){	
 	if (power2(n_bytes)!=0)
 		return -1;
 	mp.beg = malloc(n_bytes);
 	if (mp.beg == NULL)
 		return -1;
-	mp.page_size = pow(2, parm1);
+	mp.page_size = pow2(parm1);
 	mp.bitmap_size = n_bytes/mp.page_size;
 	mp.bitmap = calloc(1, mp.bitmap_size);
 	mp.count++;
