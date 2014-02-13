@@ -10,5 +10,8 @@ int main(){
 
 	int handle;
 	handle = meminit(4096, 0x1, 4, 0);
+	if(handle == -1){
+		printf("handle == -1\n");
+	}
 	memalloc(16,handle);
 }
