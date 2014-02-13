@@ -14,4 +14,5 @@ int main(){
 		printf("handle == -1\n");
 	}
 	memalloc(16,handle);
+	memalloc(16,handle);
 }
