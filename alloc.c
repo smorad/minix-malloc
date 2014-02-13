@@ -45,7 +45,8 @@ int buddy_area_free(int size){
 				// Success!
 				// [X] [X] [0] [0]
 				if(free == size){
-					return (i + size);
+					// Correct for off by 1
+					return (i + size - 1);
 				}
 				if(mp.bitmap[j]){
 					taken = 0;
@@ -58,7 +59,7 @@ int buddy_area_free(int size){
 			}
 		}
 		else if(free == size){
-			printf("Found a location of size free\n");
+			printf("Found a location of size %d	at: %d\n", free, i);
 			taken = 0;
 			int j;
 			for(j = i; j < i + size; j++){
@@ -66,7 +67,8 @@ int buddy_area_free(int size){
 				// [0] [0] [X] [X]
 				if(taken == size){
 					printf("Found an equal block taken\n");
-					return (i - size);
+					// Correct for off by 1
+					return (i - size + 1);
 				}
 				if(mp.bitmap[j]){
 					taken++;
