@@ -15,4 +15,5 @@ int main(){
 	}
 	memalloc(16,handle);
 	memalloc(16,handle);
+	memalloc(64,handle);
 }
