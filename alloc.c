@@ -128,6 +128,7 @@ int buddy_init(long n_bytes, int parm1){
 	mp.bitmap_size = n_bytes/mp.page_size;
 	mp.bitmap = calloc(1, mp.bitmap_size);
 	mp.count++;
+	printf("beg: %p\npage_size: &lu\nbitmap_size: %u\n", mp.beg, mp.page_size, mp.bitmap_size);
 }
 
 void* buddy_memalloc(long n_bytes, int handle){
