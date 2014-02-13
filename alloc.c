@@ -152,15 +152,15 @@ void* buddy_memalloc(long n_bytes, int handle){
     	int bitmap_loc = buddy_area_free(curr_size);
       	if ( bitmap_loc == -1 ){
       		printf("Error: No space Found\n");
+      		buddy_memalloc(handle, (pow2(curr_size +1)) );   // Check again for larger space
       		return NULL;
+      	}
+      	else{
       		// Marks all as taken
 	      	unsigned j;
 		for(j = bitmap_loc; j > (bitmap_loc - curr_size); j--){
 			mp.bitmap[j] = 1;
 		}
-      	}
-      	else{
-		buddy_memalloc(handle, (2^(curr_size +1)) );   // Check again for larger space
       	}
 }
 
