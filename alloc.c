@@ -24,8 +24,8 @@ mem_ptr mp;
  */
 int buddy_area_free(int size){
 	int i;
-	int taken;
-	int free;
+	int taken = 0;
+	int free = 0;
 	for(i = 0; i < mp.bitmap_size; i++){
 		printf("free: %d	taken: %d\n", free, taken);
 		if(mp.bitmap[i]){
