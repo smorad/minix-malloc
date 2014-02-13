@@ -19,6 +19,73 @@ mem_ptr mp;
 /*
  * Check the bitmap for a free area of the target size
  * size - # of pages
+ * Returns index to the start of the free area
+ * For Buddy
+ */
+int buddy_area_free(int size){
+	int i;
+	int taken;
+	int free;
+	for(i = 0; i < mp.bitmap_size; i++){
+		if(mp.bitmap[i]){
+			taken++;
+			free = 0;
+		}
+		else{
+			taken = 0;
+			free++;
+		}
+		// Found size in a row that are taken
+		if(taken == size){
+			free = 0;
+			int j;
+			for(j = i; j < i + size; j++){
+				// Success!
+				// [X] [X] [0] [0]
+				if(free == taken){
+					return (i + size);
+				}
+				if(mp.bitmap[j]){
+					taken = 0;
+					free = 0;
+					break;
+				}
+				else{
+					free++;
+				}
+			}
+		}
+		else if(free == size){
+			taken = 0;
+			int j;
+			for(j = i; j < i + size; j++){
+				// Success!
+				// [0] [0] [X] [X]
+				if(taken == free){
+					return (i - size);
+				}
+				if(mp.bitmap[j]){
+					taken++;
+				}
+				else{
+					taken = 0;
+					free = 0;
+					break;
+				}
+			}
+			// Check to see if memeory is completely empty
+			if(taken == 0){
+				return (i - size);
+			}
+		}
+	}
+	// There is not enough free space
+	return -1;
+}
+
+/*
+ * Check the bitmap for a free area of the target size
+ * size - # of pages
  * Returns theending indiex in the bitmap
  * For freelist
  */
@@ -63,7 +130,7 @@ void* buddy_memalloc(long n_bytes, int handle){
 	// Will use this to pass to the areaa_free detector
 	curr_size /= mp.page_size;
 	// Find free area
-    	int bitmap_loc = area_free(curr_size);
+    	int bitmap_loc = buddy_area_free(curr_size);
       	if ( bitmap_loc == -1){
       		printf("Error: No space Found\n");
       		return NULL;
