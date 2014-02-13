@@ -6,8 +6,8 @@
 #define false 0
 typedef struct {
 	unsigned count;
-	long beg;
-	long end;
+	void* beg;
+	void* end;
 	unsigned page_size;
 	unsigned char *bitmap;
 	unsigned bitmap_size;
