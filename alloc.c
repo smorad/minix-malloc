@@ -81,8 +81,8 @@ int buddy_area_free(int size){
 			}
 			// Check to see if memeory is completely empty
 			if(taken == 0){
-				printf("(i - size): %d\n", (i - size));
-				return (i - size);
+				printf("(i - size + 1): %d\n", (i - size + 1));
+				return (i - size + 1);
 			}
 		}
 	}
