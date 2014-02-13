@@ -120,10 +120,8 @@ int buddy_init(long n_bytes, int parm1){
 }
 
 void* buddy_memalloc(long n_bytes, int handle){
-	int i = 0;
 	// Set curr_size = to a power of 2 that is >= n_bytes
 	long curr_size = 1;
-	int k;
 	while(curr_size < n_bytes) curr_size *= 2;
 	
 	// Divide by the minimum page size
@@ -131,16 +129,17 @@ void* buddy_memalloc(long n_bytes, int handle){
 	curr_size /= mp.page_size;
 	// Find free area
     	int bitmap_loc = buddy_area_free(curr_size);
-      	if ( bitmap_loc == -1){
+      	if ( bitmap_loc == -1 ){
       		printf("Error: No space Found\n");
       		return NULL;
+      		// Marks all as taken
+	      	unsigned j;
+		for(j = bitmap_loc; j > (bitmap_loc - curr_size); j--){
+			mp.bitmap[j] = 1;
+		}
       	}
-      	unsigned j;
-	for(j = bitmap_loc; j > (bitmap_loc - cur_size); j--){
-		mp.bitmap[j] = 1;
-	}
       	else{
-		buddy_memalloc(handle, 2^(log2(bytes)+1))   // Check again for larger space
+		buddy_memalloc(handle, (2^(curr_size +1)) );   // Check again for larger space
       	}
 }
 
