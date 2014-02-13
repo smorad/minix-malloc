@@ -138,6 +138,7 @@ void* buddy_memalloc(long n_bytes, int handle){
 	// Divide by the minimum page size
 	// Will use this to pass to the areaa_free detector
 	curr_size /= mp.page_size;
+	printf("Curr_size: %lu\n", curr_size);
 	// Find free area
     	int bitmap_loc = buddy_area_free(curr_size);
       	if ( bitmap_loc == -1 ){
@@ -158,7 +159,7 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 	int rv;
 	mp.count = 0;	
 	if((flags & 0x1)==0x1){
-		printf("0x1");
+		//printf("0x1\n");
 		rv = buddy_init(n_bytes, parm1);
 		
 	}
