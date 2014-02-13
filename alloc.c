@@ -115,11 +115,15 @@ long pow2(int parm1){
 }
 
 int buddy_init(long n_bytes, int parm1){	
-	if (power2(n_bytes)!=0)
+	if (power2(n_bytes)!=0){
+		printf("not a pow2\n");
 		return -1;
+	}
 	mp.beg = malloc(n_bytes);
-	if (mp.beg == NULL)
+	if (mp.beg == NULL){
+		printf("beg = NULL\n");
 		return -1;
+	}
 	mp.page_size = pow2(parm1);
 	mp.bitmap_size = n_bytes/mp.page_size;
 	mp.bitmap = calloc(1, mp.bitmap_size);
