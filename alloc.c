@@ -167,3 +167,7 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 		}
 	return rv;
 }
+
+void* memalloc(long n_bytes, int handle){
+	return buddy_memalloc(n_bytes, handle);
+}
