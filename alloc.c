@@ -9,7 +9,7 @@ typedef struct {
 	long beg;
 	long end;
 	unsigned page_size;
-	unsigned byte *bitmap;
+	unsigned char *bitmap;
 	unsigned bitmap_size;
 
 } mem_ptr;
