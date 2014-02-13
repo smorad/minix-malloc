@@ -13,6 +13,7 @@ int main(){
 	if(handle == -1){
 		printf("handle == -1\n");
 	}
+	memalloc(64,handle);
 	memalloc(16,handle);
 	memalloc(16,handle);
 	memalloc(64,handle);
