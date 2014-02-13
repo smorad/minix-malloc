@@ -27,6 +27,7 @@ int buddy_area_free(int size){
 	int taken;
 	int free;
 	for(i = 0; i < mp.bitmap_size; i++){
+		printf("free: %d	taken: %d\n", free, taken);
 		if(mp.bitmap[i]){
 			taken++;
 			free = 0;
@@ -37,12 +38,13 @@ int buddy_area_free(int size){
 		}
 		// Found size in a row that are taken
 		if(taken == size){
+			printf("Found a location of size taken\n");
 			free = 0;
 			int j;
 			for(j = i; j < i + size; j++){
 				// Success!
 				// [X] [X] [0] [0]
-				if(free == taken){
+				if(free == size){
 					return (i + size);
 				}
 				if(mp.bitmap[j]){
@@ -56,12 +58,14 @@ int buddy_area_free(int size){
 			}
 		}
 		else if(free == size){
+			printf("Found a location of size free\n");
 			taken = 0;
 			int j;
 			for(j = i; j < i + size; j++){
 				// Success!
 				// [0] [0] [X] [X]
-				if(taken == free){
+				if(taken == size){
+					printf("Found an equal block taken\n");
 					return (i - size);
 				}
 				if(mp.bitmap[j]){
@@ -75,6 +79,7 @@ int buddy_area_free(int size){
 			}
 			// Check to see if memeory is completely empty
 			if(taken == 0){
+				printf("(i - size): %d\n", (i - size));
 				return (i - size);
 			}
 		}
@@ -138,6 +143,7 @@ void* buddy_memalloc(long n_bytes, int handle){
 	
 	// Divide by the minimum page size
 	// Will use this to pass to the areaa_free detector
+	// This is in blocks
 	curr_size /= mp.page_size;
 	printf("Curr_size: %lu\n", curr_size);
 	// Find free area
