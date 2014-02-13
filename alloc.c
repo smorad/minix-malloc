@@ -59,7 +59,7 @@ int buddy_area_free(int size){
 			}
 		}
 		else if(free == size){
-			printf("Found a location of size %d	at: %d\n", free, i);
+			printf("Found a location of size %d	at: %d\n", free, (i - size + 1));
 			taken = 0;
 			int j;
 			for(j = i; j < i + size; j++){
