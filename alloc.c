@@ -68,7 +68,7 @@ int buddy_area_free(int size){
 /*
  * Check the bitmap for a free area of the target size
  * size - # of pages
- * Returns theending indiex in the bitmap
+ * Returns the beginning indiex in the bitmap
  * For freelist
  */
 int area_free(int size){
@@ -76,7 +76,7 @@ int area_free(int size){
 	int count = 0;
 	for(i = 0; i < mp.bitmap_size; i++){
 		// Check to see if there is enough free space
-		if(count >= size) return i;	
+		if(count >= size) return (i - size + 1);	
 		if(mp.bitmap[i]) count = 0;
 		else count++;
 	}
@@ -140,6 +140,25 @@ void* buddy_memalloc(long n_bytes, int handle){
 }
 
 /*
+ * First fit memalloc
+ */
+void* first_memalloc(long n_bytes, int handle){
+	// Find free area
+	long curr_size;
+	curr_size = (n_bytes/mp.page_size);
+    	int bitmap_loc = area_free(curr_size);
+      	if ( bitmap_loc == -1 ){
+      		printf("Error: No space Found\n");
+      		return NULL;
+      	}
+      	else{
+      		// Marks all as taken
+      		mark_mem(bitmap_loc, curr_size, TAKEN);
+      	}
+}
+
+
+/*
  * Initializes a list based memalloc
  */
  int list_init(long n_bytes, int parm1, int* parm2){
@@ -167,6 +186,7 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 	else if((flags & 0x08)==0x08){
 		printf("FIRST FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
+		if(rv != -1) rv = FIRST;
 	}
 	else if ((flags & 0x10)==0x10){printf("0x10\n");}
 	else if ((flags & 0x20)==0x20){printf("0x20\n");}
