@@ -5,14 +5,14 @@
 #define true 1
 #define false 0
 #define FREE 0
-#define RESERVED 1
-#define TAKEN 2
+#define TAKEN 1
+
 typedef struct {
 	unsigned count;
 	void* beg;
 	void* end;
 	unsigned page_size;
-	unsigned char *bitmap; /* Can have 3 values: 0 = free | 1 = reserved | 2 = taken */
+	unsigned char *bitmap;
 	unsigned bitmap_size;
 
 } mem_ptr;
@@ -23,7 +23,7 @@ mem_ptr mp;
  * Marks memory with the given value
  * index  - location to start in memory
  * size   - amount to mark
- * value  - value to mark memory with ( 0 = free | 1 = reserved | 2 = taken )
+ * value  - value to mark memory with ( 0 = free | 1 = taken )
  */
  void mark_mem(int index, int size, int value){
  	unsigned j;
@@ -60,23 +60,16 @@ int buddy_area_free(int size){
 			for(j = i; j < i + size; j++){
 				// Success!
 				// [X] [X] [0] [0]
-				if(free == size){
-					// Correct for off by 1
-					return (i + size - 1);
-				}
 				if(mp.bitmap[j]){
-					taken = 0;
-					free = 0;
-					break;
+					
 				}
 				else{
-					free++;
+					
 				}
 			}
 		}
 		else if(free == size){
 			printf("Found a location of size %d	at: %d\n", free, (i - size + 1));
-			taken = 0;
 			int j;
 			for(j = i; j < i + size; j++){
 				// Success!
@@ -89,16 +82,9 @@ int buddy_area_free(int size){
 				if(mp.bitmap[j]){
 					taken++;
 				}
-				else{
-					taken = 0;
-					free = 0;
-					break;
-				}
 			}
 			// Check to see if memeory is completely empty
 			if(taken == 0){
-				// If it is, then designate it as "reserved" for its next buddy
-				mark_mem((i - size + 1), size, RESERVED);
 				printf("(i - size + 1): %d\n", (i - size + 1));
 				return (i - size + 1);
 			}
@@ -138,7 +124,10 @@ long pow2(int parm1){
 	for(i = 0; i < parm1; i++) rv *= 2;
 	return rv;
 }
-
+/*
+ * Allocates a size of memory n_bytes long.
+ * Splits it into page sizes (2^parm1)
+ */
 int buddy_init(long n_bytes, int parm1){	
 	if (!power2(n_bytes)){
 		printf("\n%lu: not a pow2\n", n_bytes);
@@ -187,13 +176,13 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 		rv = buddy_init(n_bytes, parm1);
 		
 	}
-		else if((flags & 0x08)==0x08){printf("0x8\n");}
-		else if ((flags & 0x10)==0x10){printf("0x10\n");}
-		else if ((flags & 0x20)==0x20){printf("0x20\n");}
-		else if ((flags & 0x40)==0x40){printf("0x40\n");}
-		else{
-			printf("Invalid bits set: %#010x\n", flags);
-		}
+	else if((flags & 0x08)==0x08){printf("0x8\n");}
+	else if ((flags & 0x10)==0x10){printf("0x10\n");}
+	else if ((flags & 0x20)==0x20){printf("0x20\n");}
+	else if ((flags & 0x40)==0x40){printf("0x40\n");}
+	else{
+		printf("Invalid bits set: %#010x\n", flags);
+	}
 	return rv;
 }
 
