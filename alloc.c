@@ -66,21 +66,25 @@ int buddy_area_free(int size){
 }
 
 /*
- * Check the bitmap for a free area of the target size
+ * Check the bitmap for the first free area of the target size
  * size - # of pages
  * Returns the beginning indiex in the bitmap
  * For freelist
  */
-int area_free(int size){
+int first_area_free(int size){
 	int i;
 	int count = 0;
 	for(i = 0; i < mp.bitmap_size; i++){
 		// Check to see if there is enough free space
-		if(count >= size) return (i - size + 1);	
+		if(count >= size){
+			printf("Found a location of size %d	at: %d\n", size, (i - size + 1));
+			return (i - size + 1);
+		}
 		if(mp.bitmap[i]) count = 0;
 		else count++;
 	}
 	// There is not enough free space
+	printf("Not enough room for block of size %d\n", size);
 	return -1;
 }
 
@@ -146,7 +150,7 @@ void* first_memalloc(long n_bytes, int handle){
 	// Find free area
 	long curr_size;
 	curr_size = (n_bytes/mp.page_size);
-    	int bitmap_loc = area_free(curr_size);
+    	int bitmap_loc = first_area_free(curr_size);
       	if ( bitmap_loc == -1 ){
       		printf("Error: No space Found\n");
       		return NULL;
