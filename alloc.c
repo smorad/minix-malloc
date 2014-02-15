@@ -35,6 +35,7 @@ mem_ptr mp;
 	for(j = index; j < (index + size); j++){
 		mp.bitmap[j] = value;
 	}
+	printf("Marked %d spots at %d index to %d value\n", size, index, value);
  }
 
 /*
@@ -80,7 +81,7 @@ int first_area_free(int size){
 			printf("Found a location of size %d	at: %d\n", size, (i - size + 1));
 			return (i - size + 1);
 		}
-		if(mp.bitmap[i]) count = 0;
+		if(mp.bitmap[i] == TAKEN) count = 0;
 		else count++;
 	}
 	// There is not enough free space
