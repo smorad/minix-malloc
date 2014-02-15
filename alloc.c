@@ -36,6 +36,11 @@ mem_ptr mp;
 		mp.bitmap[j] = value;
 	}
 	printf("Marked %d spots at %d index to %d value\n", size, index, value);
+	printf("\n---------------------BITMAP---------------------\n");
+	for(j = 0; j < mp.bitmap_size; j++){
+		printf("[%d]", mp.bitmap[j]);
+	}
+	printf("\n---------------------ENDBMP---------------------\n");
  }
 
 /*
@@ -176,7 +181,7 @@ void* first_memalloc(long n_bytes, int handle){
 	mp.bitmap_size = n_bytes/mp.page_size;
 	mp.bitmap = calloc(1, mp.bitmap_size);
 	mp.count++;
-	printf("LIST\n\nparm1: %d\nbeg: %p\npage_size: %lu\nbitmap_size: %u\n", parm1, mp.beg, mp.page_size, mp.bitmap_size);
+	printf("parm1: %d\nbeg: %p\npage_size: %lu\nbitmap_size: %u\n", parm1, mp.beg, mp.page_size, mp.bitmap_size);
 	return LIST;
 }
 
