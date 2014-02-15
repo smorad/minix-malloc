@@ -6,6 +6,12 @@
 #define false 0
 #define FREE 0
 #define TAKEN 1
+#define BUDDY 0
+#define FIRST 1
+#define NEXT 2
+#define BEST 3
+#define LIST 4
+
 
 typedef struct {
 	unsigned count;
@@ -14,7 +20,6 @@ typedef struct {
 	unsigned page_size;
 	unsigned char *bitmap;
 	unsigned bitmap_size;
-
 } mem_ptr;
 
 mem_ptr mp;
@@ -37,57 +42,23 @@ mem_ptr mp;
  * size - # of pages
  * Returns index to the start of the free area
  * For Buddy
+ * BROKEN RIGHT NOW
  */
 int buddy_area_free(int size){
 	int i;
 	int taken = 0;
 	int free = 0;
-	for(i = 0; i < mp.bitmap_size; i++){
+	for(i = 0; i < mp.bitmap_size;){
 		printf("free: %d	taken: %d\n", free, taken);
-		if(mp.bitmap[i]){
-			taken++;
-			free = 0;
-		}
-		else{
-			taken = 0;
+		// Go until a taken space is found
+		// Record size
+		while(!mp.bitmap[i++]){
+			if( i >= (mp.bitmap_size - 1) ) break;
 			free++;
 		}
-		// Found size in a row that are taken
-		if(taken == size){
-			printf("Found a location of size taken\n");
-			free = 0;
-			int j;
-			for(j = i; j < i + size; j++){
-				// Success!
-				// [X] [X] [0] [0]
-				if(mp.bitmap[j]){
-					
-				}
-				else{
-					
-				}
-			}
-		}
-		else if(free == size){
-			printf("Found a location of size %d	at: %d\n", free, (i - size + 1));
-			int j;
-			for(j = i; j < i + size; j++){
-				// Success!
-				// [0] [0] [X] [X]
-				if(taken == size){
-					printf("Found an equal block taken\n");
-					// Correct for off by 1
-					return (i - size + 1);
-				}
-				if(mp.bitmap[j]){
-					taken++;
-				}
-			}
-			// Check to see if memeory is completely empty
-			if(taken == 0){
-				printf("(i - size + 1): %d\n", (i - size + 1));
-				return (i - size + 1);
-			}
+		// Free block of exact size found
+		if(free == size){
+			
 		}
 	}
 	// There is not enough free space
@@ -143,6 +114,7 @@ int buddy_init(long n_bytes, int parm1){
 	mp.bitmap = calloc(1, mp.bitmap_size);
 	mp.count++;
 	printf("parm1: %d\nbeg: %p\npage_size: %lu\nbitmap_size: %u\n", parm1, mp.beg, mp.page_size, mp.bitmap_size);
+	return BUDDY;
 }
 
 void* buddy_memalloc(long n_bytes, int handle){
@@ -159,13 +131,29 @@ void* buddy_memalloc(long n_bytes, int handle){
     	int bitmap_loc = buddy_area_free(curr_size);
       	if ( bitmap_loc == -1 ){
       		printf("Error: No space Found\n");
-      		buddy_memalloc(handle, (pow2(curr_size +1)) );   // Check again for larger space
-      		return NULL;
+      		return buddy_memalloc(handle, (pow2(curr_size +1)) );   // Check again for larger space
       	}
       	else{
       		// Marks all as taken
       		mark_mem(bitmap_loc, curr_size, TAKEN);
       	}
+}
+
+/*
+ * Initializes a list based memalloc
+ */
+ int list_init(long n_bytes, int parm1, int* parm2){
+	mp.beg = malloc(n_bytes);
+	if (mp.beg == NULL){
+		printf("beg = NULL\n");
+		return -1;
+	}
+	mp.page_size = pow2(parm1);
+	mp.bitmap_size = n_bytes/mp.page_size;
+	mp.bitmap = calloc(1, mp.bitmap_size);
+	mp.count++;
+	printf("LIST\n\nparm1: %d\nbeg: %p\npage_size: %lu\nbitmap_size: %u\n", parm1, mp.beg, mp.page_size, mp.bitmap_size);
+	return LIST;
 }
 
 int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
@@ -176,7 +164,10 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 		rv = buddy_init(n_bytes, parm1);
 		
 	}
-	else if((flags & 0x08)==0x08){printf("0x8\n");}
+	else if((flags & 0x08)==0x08){
+		printf("FIRST FIT\n");
+		rv = list_init(n_bytes, parm1, parm2);
+	}
 	else if ((flags & 0x10)==0x10){printf("0x10\n");}
 	else if ((flags & 0x20)==0x20){printf("0x20\n");}
 	else if ((flags & 0x40)==0x40){printf("0x40\n");}
@@ -187,5 +178,11 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 }
 
 void* memalloc(long n_bytes, int handle){
-	return buddy_memalloc(n_bytes, handle);
+	switch(handle){
+		case BUDDY:
+			return buddy_memalloc(n_bytes, handle);
+		case FIRST:
+			return first_memalloc(n_bytes, handle);
+	}
+	return NULL;
 }
