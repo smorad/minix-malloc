@@ -9,7 +9,7 @@ int main(){
 	printf("%d\n",meminit(128, 0x40, 0, 0));*/
 
 	int handle;
-	handle = meminit(4096, 0xFF, 4, 0);
+	handle = meminit(4096, 0x08, 4, 0);
 	if(handle == -1){
 		printf("handle == -1\n");
 	}
