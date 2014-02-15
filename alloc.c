@@ -32,7 +32,7 @@ mem_ptr mp;
  */
  void mark_mem(int index, int size, int value){
  	unsigned j;
-	for(j = index; j < (index + curr_size); j++){
+	for(j = index; j < (index + size); j++){
 		mp.bitmap[j] = value;
 	}
  }
