@@ -4,17 +4,33 @@
 
 #define true 1
 #define false 0
+#define FREE 0
+#define RESERVED 1
+#define TAKEN 2
 typedef struct {
 	unsigned count;
 	void* beg;
 	void* end;
 	unsigned page_size;
-	unsigned char *bitmap;
+	unsigned char *bitmap; /* Can have 3 values: 0 = free | 1 = reserved | 2 = taken */
 	unsigned bitmap_size;
 
 } mem_ptr;
 
 mem_ptr mp;
+
+/*
+ * Marks memory with the given value
+ * index  - location to start in memory
+ * size   - amount to mark
+ * value  - value to mark memory with ( 0 = free | 1 = reserved | 2 = taken )
+ */
+ void mark_mem(int index, int size, int value){
+ 	unsigned j;
+	for(j = index; j < (index + curr_size); j++){
+		mp.bitmap[j] = value;
+	}
+ }
 
 /*
  * Check the bitmap for a free area of the target size
@@ -81,6 +97,8 @@ int buddy_area_free(int size){
 			}
 			// Check to see if memeory is completely empty
 			if(taken == 0){
+				// If it is, then designate it as "reserved" for its next buddy
+				mark_mem((i - size + 1), size, RESERVED);
 				printf("(i - size + 1): %d\n", (i - size + 1));
 				return (i - size + 1);
 			}
@@ -157,10 +175,7 @@ void* buddy_memalloc(long n_bytes, int handle){
       	}
       	else{
       		// Marks all as taken
-	      	unsigned j;
-		for(j = bitmap_loc; j < (bitmap_loc + curr_size); j++){
-			mp.bitmap[j] = 1;
-		}
+      		mark_mem(bitmap_loc, curr_size, TAKEN);
       	}
 }
 
