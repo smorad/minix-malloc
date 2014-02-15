@@ -83,8 +83,8 @@ int first_area_free(int size){
 	for(i = 0; i < mp.bitmap_size; i++){
 		// Check to see if there is enough free space
 		if(count >= size){
-			printf("Found a location of size %d	at: %d\n", size, (i - size + 1));
-			return (i - size + 1);
+			printf("Found a location of size %d	at: %d\n", size, (i - count));
+			return (i - count);
 		}
 		if(mp.bitmap[i] == TAKEN) count = 0;
 		else count++;
