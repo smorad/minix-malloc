@@ -194,6 +194,8 @@ void* buddy_memalloc(long n_bytes, int handle){
  * First fit memalloc
  */
 void* list_memalloc(long n_bytes, int handle){
+	// Return pointer in memory
+	void *mem_ptr;
 	// Find free area
 	long curr_size;
 	curr_size = (n_bytes/mp.page_size);
@@ -214,6 +216,9 @@ void* list_memalloc(long n_bytes, int handle){
       	else{
       		// Marks all as taken
       		mark_mem(bitmap_loc, curr_size, TAKEN);
+      		mem_ptr = (mp.beg + (bitmap_loc + mp.page_size));
+      		printf("mem_ptr: %p\n", mem_ptr);
+      		return mem_ptr;
       	}
 }
 
