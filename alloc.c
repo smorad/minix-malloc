@@ -23,6 +23,23 @@ typedef struct {
 	unsigned bitmap_size;
 } mem_ptr;
 
+struct binary_tree{
+	void* seg_beg;
+	void* seg_end;
+	struct binary_tree* lchild;
+	struct binary_tree* rchild;
+};
+
+typedef struct binary_tree *btree;
+
+//init to 128kb
+//create node [0, 128]
+//malloc 16kb
+//create lchild [0,64] rchild [64,128]
+//create lchild [0,32] rchild [32,64]
+//create lchild [0,16] rchild[16,32]
+
+
 mem_ptr mp;
 
 /*
