@@ -279,6 +279,5 @@ void* memalloc(long n_bytes, int handle){
 }
 
 void memfree(void *region){
-	int temp_size = sizeof(region);
-	printf("Freeing size: %d\n", temp_size);
+	printf("Projected Index: %d\n", (region/mp.page_size) );
 }
