@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <assert.h>
 
 #define true 1
 #define false 0
@@ -24,15 +25,19 @@ typedef struct {
 } mem_ptr;
 
 struct binary_tree{
-	void* seg_beg;
-	void* seg_end;
+	int taken;
+	long size;
+	long seg_beg;
+	long seg_end;
+	void* seg_start;
 	struct binary_tree* lchild;
 	struct binary_tree* rchild;
 };
 
 typedef struct binary_tree *btree;
-btree leaves[4096];
-btree 
+
+btree trees[1024];
+int btree_count = 0;
 //init to 128kb
 //create node [0, 128]
 //malloc 16kb
@@ -40,8 +45,33 @@ btree
 //create lchild [0,32] rchild [32,64]
 //create lchild [0,16] rchild[16,32]
 
-int _buddy_alloc(btree root, size n_bytes){
-	//btree ptr = root;
+btree insert_node(long begin, long end){
+	btree new = malloc(sizeof(btree));
+	new->size = end - begin;
+	new->lchild = NULL;
+	new->rchild = NULL;
+	new->seg_start = NULL;
+	new->taken = false;
+	new->seg_beg = begin;
+	new->seg_end = end;
+}
+
+int _buddy_init(long n_bytes, int parm1){	
+	if (!power2(n_bytes)){
+		printf("\n%lu: not a pow2\n", n_bytes);
+		return ERROR;
+	}
+	assert(parm1>0);
+	trees[btree_count] = insert_node(0, n_bytes/parm1);
+	trees[btree_count] = malloc(n_bytes);
+	if (trees[btree_count] == NULL){
+		printf("beg = NULL\n");
+		return ERROR;
+	}
+	return btree_count++;
+}
+
+void* _buddy_alloc(long n_bytes, btree root){
 	btree parent = root;
 	btree lchild = NULL;
 	btree rchild = NULL;
@@ -50,21 +80,21 @@ int _buddy_alloc(btree root, size n_bytes){
 	lchild = parent->lchild;
 	rchild = parent->rchild;
 		if(lchild != NULL)
-			_buddy_alloc(lchild);
+			return _buddy_alloc(n_bytes, lchild);
 		else if(rchild != NULL)
-			_buddy_alloc(rchild);
+			return _buddy_alloc(n_bytes, rchild);
 		else{	//leaf
 			//if block is empty and correct size
-			if(!root->taken &&root->size = n_bytes){
-				mark_taken;
-				return block;
+			if(!parent->taken && parent->size == n_bytes){
+				parent->taken = true;
+				return parent->seg_start;
 			}
 			else{
 				//split block into children
-				root->left = create_node(root->begin, root->end/2);
-				root->right = create_node(root->end/2+1, root->end);
+				parent->lchild = insert_node(parent->seg_beg, parent->seg_end/2-1);
+				parent->rchild = insert_node(parent->seg_end/2, parent->seg_end);
 				//check again starting at current node
-				_buddy_alloc(root, n_bytes);
+				return _buddy_alloc(n_bytes, parent);
 			}
 		
 			//else
@@ -80,7 +110,6 @@ int _buddy_alloc(btree root, size n_bytes){
 	}
 }
 
-btree root;
 mem_ptr mp;
 
 /*
@@ -218,7 +247,7 @@ long pow2(int parm1){
  * Allocates a size of memory n_bytes long.
  * Splits it into page sizes (2^parm1)
  */
-int buddy_init(long n_bytes, int parm1){	
+/*int buddy_init(long n_bytes, int parm1){	
 	if (!power2(n_bytes)){
 		printf("\n%lu: not a pow2\n", n_bytes);
 		return ERROR;
@@ -234,7 +263,7 @@ int buddy_init(long n_bytes, int parm1){
 	mp.count++;
 	printf("parm1: %d\nbeg: %p\npage_size: %lu\nbitmap_size: %u\n", parm1, mp.beg, mp.page_size, mp.bitmap_size);
 	return BUDDY;
-}
+}*/
 
 void* buddy_memalloc(long n_bytes, int handle){
 	// Set curr_size = to a power of 2 that is >= n_bytes
@@ -313,7 +342,7 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 	mp.count = 0;	
 	if((flags & 0x1)==0x1){
 		//printf("0x1\n");
-		rv = buddy_init(n_bytes, parm1);
+		rv = _buddy_init(n_bytes, parm1);
 		
 	}
 	else if((flags & 0x08)==0x08){
@@ -337,7 +366,7 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 void* memalloc(long n_bytes, int handle){
 	switch(handle){
 		case BUDDY:
-			return buddy_memalloc(n_bytes, handle);
+			return _buddy_alloc(n_bytes, trees[handle]);
 		case ERROR:
 			printf("Memory not initialized correctly\n");
 			return NULL;
