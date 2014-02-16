@@ -121,7 +121,13 @@ int first_area_free(int size){
  */
 int next_area_free(int size){
 	int count = 0;
-	for(; curr_index < mp.bitmap_size; curr_index++){
+	unsigned full_loop;
+	for(full_loop = 0; full_loop < mp.bitmap_size; full_loop++){
+		// Loop back around
+		if( curr_index >= mp.bitmap_size){
+			curr_index = 0;
+			count = 0;
+		}
 		// Check to see if there is enough free space
 		if(count >= size){
 			printf("Found a location of size %d	at: %d\n", size, (curr_index - count));
@@ -129,6 +135,9 @@ int next_area_free(int size){
 		}
 		if(mp.bitmap[curr_index] == TAKEN) count = 0;
 		else count++;
+		
+		// Next value in bitmap
+		curr_index++;
 	}
 	// There is not enough free space
 	printf("Not enough room for block of size %d\n", size);
