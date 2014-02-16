@@ -25,6 +25,25 @@ typedef struct {
 mem_ptr mp;
 
 /*
+ * Prints the bitmap for bedugging purposes
+ */
+ void print_bitmap(){
+ 	printf("Marked %d spots at %d index to %d value\n", size, index, value);
+	printf("\n---------------------BITMAP---------------------\n");
+	unsigned j;
+	unsigned col_count = 0;
+	for(j = 0; j < mp.bitmap_size; j++){
+		if(col_count == 15){
+			col_count = 0;
+			printf("\n");
+		}
+		col_count++;
+		printf("[%d]", mp.bitmap[j]);
+	}
+	printf("\n---------------------ENDBMP---------------------\n");
+ }
+
+/*
  * Marks memory with the given value
  * index  - location to start in memory
  * size   - amount to mark
@@ -35,12 +54,7 @@ mem_ptr mp;
 	for(j = index; j < (index + size); j++){
 		mp.bitmap[j] = value;
 	}
-	printf("Marked %d spots at %d index to %d value\n", size, index, value);
-	printf("\n---------------------BITMAP---------------------\n");
-	for(j = 0; j < mp.bitmap_size; j++){
-		printf("[%d]", mp.bitmap[j]);
-	}
-	printf("\n---------------------ENDBMP---------------------\n");
+	print_bitmap();
  }
 
 /*
