@@ -279,5 +279,8 @@ void* memalloc(long n_bytes, int handle){
 }
 
 void memfree(void *region){
-	printf("Projected Index: %d\n", (region/mp.page_size) );
+	unsigned mem_index;
+	mem_index = (unsigned)(region - mp.beg);
+	printf("Memory Index: %u\n", mem_index );
+	printf("Projected Index: %u\n", (mem_index/mp.page_size) );
 }
