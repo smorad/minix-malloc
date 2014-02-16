@@ -278,12 +278,12 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 	else if((flags & 0x08)==0x08){
 		printf("FIRST FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
-		if(rv != -1) rv = FIRST;
+		if(rv != ERROR) rv = FIRST;
 	}
 	else if ((flags & 0x10)==0x10){
 		printf("NEXT FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
-		if(rv != -1) rv = NEXT;
+		if(rv != ERROR) rv = NEXT;
 	}
 	else if ((flags & 0x20)==0x20){printf("0x20\n");}
 	else if ((flags & 0x40)==0x40){printf("0x40\n");}
@@ -298,7 +298,7 @@ void* memalloc(long n_bytes, int handle){
 		case BUDDY:
 			return buddy_memalloc(n_bytes, handle);
 		case ERROR:
-			printf("Error Allocating Memory\n");
+			printf("Memory not initialized correctly\n");
 			return NULL;
 		default:
 			return list_memalloc(n_bytes, handle);
