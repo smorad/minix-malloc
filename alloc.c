@@ -25,10 +25,15 @@ typedef struct {
 mem_ptr mp;
 
 /*
+ * Global variable for keeping track of index for next fit
+ */
+ unsigned curr_index = 0;
+
+/*
  * Prints the bitmap for bedugging purposes
  */
  void print_bitmap(){
-	printf("\n---------------------BITMAP---------------------\n");
+	printf("\n--------------------BITMAP----------------------\n");
 	unsigned j;
 	unsigned col_count = 0;
 	for(j = 0; j < mp.bitmap_size; j++){
@@ -39,7 +44,7 @@ mem_ptr mp;
 		col_count++;
 		printf("[%d]", mp.bitmap[j]);
 	}
-	printf("\n---------------------ENDBMP---------------------\n");
+	printf("\n--------------------ENDBMP----------------------\n");
  }
 
 /*
@@ -108,6 +113,28 @@ int first_area_free(int size){
 	return -1;
 }
 
+/*
+ * Check the bitmap for the next free area of the target size
+ * size - # of pages
+ * Returns the beginning indiex in the bitmap
+ * For freelist
+ */
+int next_area_free(int size){
+	int count = 0;
+	for(; curr_index < mp.bitmap_size; curr_index++){
+		// Check to see if there is enough free space
+		if(count >= size){
+			printf("Found a location of size %d	at: %d\n", size, (curr_index - count));
+			return (curr_index - count);
+		}
+		if(mp.bitmap[curr_index] == TAKEN) count = 0;
+		else count++;
+	}
+	// There is not enough free space
+	printf("Not enough room for block of size %d\n", size);
+	return -1;
+}
+
 
 int power2(long x){
 	return (x & (x-1))==0;
@@ -166,11 +193,20 @@ void* buddy_memalloc(long n_bytes, int handle){
 /*
  * First fit memalloc
  */
-void* first_memalloc(long n_bytes, int handle){
+void* list_memalloc(long n_bytes, int handle){
 	// Find free area
 	long curr_size;
 	curr_size = (n_bytes/mp.page_size);
-    	int bitmap_loc = first_area_free(curr_size);
+	int bitmap_loc;
+	/* Switch for different list cases */
+	switch(handle){
+		case FIRST: 
+    			bitmap_loc = first_area_free(curr_size);
+    			break;
+    		case NEXT: 
+    			bitmap_loc = next_area_free(curr_size);
+    			break;
+	}
       	if ( bitmap_loc == -1 ){
       		printf("Error: No space Found\n");
       		return NULL;
@@ -212,7 +248,11 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 		rv = list_init(n_bytes, parm1, parm2);
 		if(rv != -1) rv = FIRST;
 	}
-	else if ((flags & 0x10)==0x10){printf("0x10\n");}
+	else if ((flags & 0x10)==0x10){
+		printf("NEXT FIT\n");
+		rv = list_init(n_bytes, parm1, parm2);
+		if(rv != -1) rv = NEXT;
+	}
 	else if ((flags & 0x20)==0x20){printf("0x20\n");}
 	else if ((flags & 0x40)==0x40){printf("0x40\n");}
 	else{
@@ -226,7 +266,14 @@ void* memalloc(long n_bytes, int handle){
 		case BUDDY:
 			return buddy_memalloc(n_bytes, handle);
 		case FIRST:
-			return first_memalloc(n_bytes, handle);
+			return list_memalloc(n_bytes, handle);
+		case NEXT:
+			return list_memalloc(n_bytes, handle);
 	}
 	return NULL;
+}
+
+void memfree(void *region){
+	int temp_size = sizeof(region);
+	printf("Freeing size: %d\n", temp_size);
 }
