@@ -11,6 +11,7 @@
 #define NEXT 2
 #define BEST 3
 #define LIST 4
+#define ERROR -1
 
 
 typedef struct {
@@ -87,7 +88,7 @@ int buddy_area_free(int size){
 		}
 	}
 	// There is not enough free space
-	return -1;
+	return ERROR;
 }
 
 /*
@@ -110,7 +111,7 @@ int first_area_free(int size){
 	}
 	// There is not enough free space
 	printf("Not enough room for block of size %d\n", size);
-	return -1;
+	return ERROR;
 }
 
 /*
@@ -141,7 +142,7 @@ int next_area_free(int size){
 	}
 	// There is not enough free space
 	printf("Not enough room for block of size %d\n", size);
-	return -1;
+	return ERROR;
 }
 
 
@@ -162,12 +163,12 @@ long pow2(int parm1){
 int buddy_init(long n_bytes, int parm1){	
 	if (!power2(n_bytes)){
 		printf("\n%lu: not a pow2\n", n_bytes);
-		return -1;
+		return ERROR;
 	}
 	mp.beg = malloc(n_bytes);
 	if (mp.beg == NULL){
 		printf("beg = NULL\n");
-		return -1;
+		return ERROR;
 	}
 	mp.page_size = pow2(parm1);
 	mp.bitmap_size = n_bytes/mp.page_size;
@@ -189,7 +190,7 @@ void* buddy_memalloc(long n_bytes, int handle){
 	printf("Curr_size: %lu\n", curr_size);
 	// Find free area
     	int bitmap_loc = buddy_area_free(curr_size);
-      	if ( bitmap_loc == -1 ){
+      	if ( bitmap_loc == ERROR ){
       		printf("Error: No space Found\n");
       		return buddy_memalloc(handle, (pow2(curr_size +1)) );   // Check again for larger space
       	}
@@ -218,7 +219,7 @@ void* list_memalloc(long n_bytes, int handle){
     			bitmap_loc = next_area_free(curr_size);
     			break;
 	}
-      	if ( bitmap_loc == -1 ){
+      	if ( bitmap_loc == ERROR ){
       		printf("Error: No space Found\n");
       		return NULL;
       	}
@@ -239,7 +240,7 @@ void* list_memalloc(long n_bytes, int handle){
 	mp.beg = malloc(n_bytes);
 	if (mp.beg == NULL){
 		printf("beg = NULL\n");
-		return -1;
+		return ERROR;
 	}
 	mp.page_size = pow2(parm1);
 	mp.bitmap_size = n_bytes/mp.page_size;
@@ -279,9 +280,10 @@ void* memalloc(long n_bytes, int handle){
 	switch(handle){
 		case BUDDY:
 			return buddy_memalloc(n_bytes, handle);
-		case FIRST:
-			return list_memalloc(n_bytes, handle);
-		case NEXT:
+		case ERROR:
+			printf("Error Allocating Memory\n");
+			return NULL;
+		default:
 			return list_memalloc(n_bytes, handle);
 	}
 	return NULL;
