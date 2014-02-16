@@ -31,7 +31,8 @@ struct binary_tree{
 };
 
 typedef struct binary_tree *btree;
-
+btree leaves[4096];
+btree 
 //init to 128kb
 //create node [0, 128]
 //malloc 16kb
@@ -39,7 +40,47 @@ typedef struct binary_tree *btree;
 //create lchild [0,32] rchild [32,64]
 //create lchild [0,16] rchild[16,32]
 
+int _buddy_alloc(btree root, size n_bytes){
+	//btree ptr = root;
+	btree parent = root;
+	btree lchild = NULL;
+	btree rchild = NULL;
+	//traverse in order
+	while(parent!=NULL){
+	lchild = parent->lchild;
+	rchild = parent->rchild;
+		if(lchild != NULL)
+			_buddy_alloc(lchild);
+		else if(rchild != NULL)
+			_buddy_alloc(rchild);
+		else{	//leaf
+			//if block is empty and correct size
+			if(!root->taken &&root->size = n_bytes){
+				mark_taken;
+				return block;
+			}
+			else{
+				//split block into children
+				root->left = create_node(root->begin, root->end/2);
+				root->right = create_node(root->end/2+1, root->end);
+				//check again starting at current node
+				_buddy_alloc(root, n_bytes);
+			}
+		
+			//else
+				//search from root for empty node of n_bytes*2
+					//if found, split into lchild and rchild
+						//if lchild.size == n_bytes
+							//allocate
+						//else
+							//split child into lchild and rchild
+				//else search from root for empty node of n_bytes*2*2
+		}
+			
+	}
+}
 
+btree root;
 mem_ptr mp;
 
 /*
