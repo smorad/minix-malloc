@@ -32,7 +32,7 @@ mem_ptr mp;
 	unsigned j;
 	unsigned col_count = 0;
 	for(j = 0; j < mp.bitmap_size; j++){
-		if(col_count == 15){
+		if(col_count == 16){
 			col_count = 0;
 			printf("\n");
 		}
