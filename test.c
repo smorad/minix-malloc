@@ -11,7 +11,8 @@ int main(){
 	memalloc(16,handle);
 	memalloc(16,handle);
 	memalloc(64,handle);
-	memalloc(2048,handle);
+	void* mem_area = memalloc(2048,handle);
 	// Test overflow
 	memalloc(2048,handle);
+	memfree(mem_area);
 }
