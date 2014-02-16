@@ -4,7 +4,7 @@
 int main(){
 	int handle;
 	// First fit  = 0x08
-	handle = meminit(4096, 0x08, 4, 0);
+	handle = meminit(4096, 0x10, 4, 0);
 	if(handle == -1){
 		printf("handle == -1\n");
 	}
@@ -20,4 +20,5 @@ int main(){
 	memfree(mem_area3);
 	memfree(mem_area4);
 	memfree(mem_area5);
+	mem_area1 = memalloc(64,handle);
 }
