@@ -279,8 +279,10 @@ void* memalloc(long n_bytes, int handle){
 }
 
 void memfree(void *region){
-	unsigned mem_index;
+	unsigned mem_index, bitmap_index, free_size;
 	mem_index = (unsigned)(region - mp.beg);
-	printf("Memory Index: %u\n", mem_index );
-	printf("Projected Index: %u\n", (mem_index/mp.page_size) );
+	bitmap_index = (mem_index/mp.page_size);
+	free_size = 8; // dummy value until i figure out how to actually do it
+	printf("Bitmap index freed: %u		of size: %d\n", bitmap_index, free_size );
+	mark_mem(bitmap_index, free_size, FREE);
 }
