@@ -15,14 +15,9 @@ int main(){
 	void* mem_area5 = memalloc(2048,handle);
 	// Test overflow
 	memalloc(2048,handle);
-	printf("mem_area1\n");
 	memfree(mem_area1);
-	printf("mem_area2\n");
 	memfree(mem_area2);
-	printf("mem_area3\n");
 	memfree(mem_area3);
-	printf("mem_area4\n");
 	memfree(mem_area4);
-	printf("mem_area5\n");
 	memfree(mem_area5);
 }
