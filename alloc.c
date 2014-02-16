@@ -28,7 +28,6 @@ mem_ptr mp;
  * Prints the bitmap for bedugging purposes
  */
  void print_bitmap(){
- 	printf("Marked %d spots at %d index to %d value\n", size, index, value);
 	printf("\n---------------------BITMAP---------------------\n");
 	unsigned j;
 	unsigned col_count = 0;
@@ -54,6 +53,7 @@ mem_ptr mp;
 	for(j = index; j < (index + size); j++){
 		mp.bitmap[j] = value;
 	}
+	printf("Marked %d spots at %d index to %d value\n", size, index, value);
 	print_bitmap();
  }
 
