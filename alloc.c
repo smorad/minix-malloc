@@ -45,7 +45,7 @@ int power2(long x){
 }
 
 void btree_debug(btree parent){
-	printf("parent size: %lu beg: %lu end: %lu\n", parent->size, parent->seg_beg, parent->		seg_end);
+	printf("parent size: %lu beg: %lu end: %lu\n", parent->size, parent->seg_beg, parent->seg_end);
 	printf("lchild_ptr: %p rchild_ptr: %p\n", 
 		parent->lchild->seg_start, parent->rchild->seg_start);
 
@@ -97,7 +97,7 @@ void* _buddy_alloc(long n_bytes, btree root){
 		else if(parent->rchild != NULL)
 			return _buddy_alloc(n_bytes, parent->rchild);
 		else{
-			//leaf
+			//if leaf
 			//if block is empty and correct size
 			if(parent->taken==0 && (parent->size == n_bytes) || (parent->size== n_bytes-1)){
 				printf("***FOUND***\n\n\n");
@@ -107,8 +107,9 @@ void* _buddy_alloc(long n_bytes, btree root){
 			else{
 				printf("creating child\n");
 				//split block into children
-				parent->lchild = insert_node(parent->seg_beg, (parent->seg_end/2)-1);
-				parent->rchild = insert_node(parent->seg_end/2, parent->seg_end);
+				//these conflict, fix later
+				parent->lchild = insert_node(parent->seg_beg, (parent->seg_end/2));
+				parent->rchild = insert_node(parent->seg_end/2+1, parent->seg_end+1);
 				//check again starting at current node
 				btree_debug(parent);
 				return _buddy_alloc(n_bytes, parent);
