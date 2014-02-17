@@ -37,23 +37,36 @@ struct binary_tree{
 typedef struct binary_tree *btree;
 
 btree trees[1024];
+
 int btree_count = 0;
-//init to 128kb
-//create node [0, 128]
-//malloc 16kb
-//create lchild [0,64] rchild [64,128]
-//create lchild [0,32] rchild [32,64]
-//create lchild [0,16] rchild[16,32]
+
+int power2(long x){
+	return (x & (x-1))==0;
+}
+
+void btree_debug(btree parent){
+	printf("parent size: %lu beg: %lu end: %lu\n", parent->size, parent->seg_beg, parent->		seg_end);
+	printf("lchild_ptr: %p rchild_ptr: %p\n", 
+		parent->lchild->seg_start, parent->rchild->seg_start);
+
+}
 
 btree insert_node(long begin, long end){
-	btree new = malloc(sizeof(btree));
+	btree new = malloc(sizeof(struct binary_tree));
+	assert(new!=NULL);
 	new->size = end - begin;
+	//if(begin==0)
+	//	new->size++;
+	assert(new->size!=0);
 	new->lchild = NULL;
 	new->rchild = NULL;
-	new->seg_start = NULL;
 	new->taken = false;
+	new->seg_start = NULL;
 	new->seg_beg = begin;
 	new->seg_end = end;
+	assert(new!=NULL);
+	printf("inserting node of size: %lu, beg: %lu end %lu\n", new->size, new->seg_beg, new->seg_end);
+	return new;
 }
 
 int _buddy_init(long n_bytes, int parm1){	
@@ -62,8 +75,8 @@ int _buddy_init(long n_bytes, int parm1){
 		return ERROR;
 	}
 	assert(parm1>0);
-	trees[btree_count] = insert_node(0, n_bytes/parm1);
-	trees[btree_count] = malloc(n_bytes);
+	trees[btree_count] = insert_node(0, n_bytes); //change me for pages
+	trees[btree_count]->seg_start = (void*)malloc(n_bytes);
 	if (trees[btree_count] == NULL){
 		printf("beg = NULL\n");
 		return ERROR;
@@ -79,32 +92,28 @@ void* _buddy_alloc(long n_bytes, btree root){
 	while(parent!=NULL){
 	lchild = parent->lchild;
 	rchild = parent->rchild;
-		if(lchild != NULL)
-			return _buddy_alloc(n_bytes, lchild);
-		else if(rchild != NULL)
-			return _buddy_alloc(n_bytes, rchild);
-		else{	//leaf
+		if(parent->lchild != NULL)
+			return _buddy_alloc(n_bytes, parent->lchild);
+		else if(parent->rchild != NULL)
+			return _buddy_alloc(n_bytes, parent->rchild);
+		else{
+			//leaf
 			//if block is empty and correct size
-			if(!parent->taken && parent->size == n_bytes){
+			if(parent->taken==0 && (parent->size == n_bytes) || (parent->size== n_bytes-1)){
+				printf("***FOUND***\n\n\n");
 				parent->taken = true;
 				return parent->seg_start;
 			}
 			else{
+				printf("creating child\n");
 				//split block into children
-				parent->lchild = insert_node(parent->seg_beg, parent->seg_end/2-1);
+				parent->lchild = insert_node(parent->seg_beg, (parent->seg_end/2)-1);
 				parent->rchild = insert_node(parent->seg_end/2, parent->seg_end);
 				//check again starting at current node
+				btree_debug(parent);
 				return _buddy_alloc(n_bytes, parent);
 			}
 		
-			//else
-				//search from root for empty node of n_bytes*2
-					//if found, split into lchild and rchild
-						//if lchild.size == n_bytes
-							//allocate
-						//else
-							//split child into lchild and rchild
-				//else search from root for empty node of n_bytes*2*2
 		}
 			
 	}
@@ -233,9 +242,6 @@ int next_area_free(int size){
 }
 
 
-int power2(long x){
-	return (x & (x-1))==0;
-}
 
 long pow2(int parm1){
 	int i;
@@ -333,7 +339,7 @@ void* list_memalloc(long n_bytes, int handle){
 	mp.bitmap_size = n_bytes/mp.page_size;
 	mp.bitmap = calloc(1, mp.bitmap_size);
 	mp.count++;
-	printf("parm1: %d\nbeg: %p\npage_size: %lu\nbitmap_size: %u\n", parm1, mp.beg, mp.page_size, mp.bitmap_size);
+	printf("parm1: %d\nbeg: %p\npage_size: %u\nbitmap_size: %u\n", parm1, mp.beg, mp.page_size, mp.bitmap_size);
 	return LIST;
 }
 
