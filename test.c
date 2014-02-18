@@ -45,6 +45,7 @@ void aux_test_buddy(){
 	void* h2 = memalloc(256, 0);
 	void* h3 = memalloc(128, 0);
 	test *t = memalloc(sizeof(test), 0);
+	printf("assigning %p->%p to 1\n", t, t->f1);
 	t->f1 = 1;
 	t->f2 = 2;
 	t->f3 = 3;
