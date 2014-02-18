@@ -110,7 +110,11 @@ void* _buddy_alloc(long n_bytes, btree root){
 	while(parent!=NULL){
 	lchild = parent->lchild;
 	rchild = parent->rchild;
-		if(parent->lchild != NULL)
+        if(parent->size < n_bytes){//too deep into the tree
+            printf("--PARENT TOO SMALL--\ n_bytes: %lu size: %lu\n", n_bytes, parent->size);
+            return NULL;
+
+        }		if(parent->lchild != NULL)
 			return _buddy_alloc(n_bytes, parent->lchild);
 		else if(parent->rchild != NULL)
 			return _buddy_alloc(n_bytes, parent->rchild);
