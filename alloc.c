@@ -52,21 +52,7 @@ void btree_debug(btree parent){
 }
 
 void print_memtree(btree root){
-	btree leaves[1024];
-	int leaf_count = 0;
-	//traverse in order
-	while(root!=NULL){
-		if(root-> lchild == NULL && root->rchild==NULL){
-			leaves[leaf_count++] = root;
-		}
-	}
-		int i;
-		for(i=0; i<leaf_count; i++){
-			if(leaves[i]->taken)
-				printf("%lu XX", leaves[i]->seg_beg);
-			else
-				printf("%lu __", leaves[i]->seg_beg);
-		}
+	
 }
 
 btree insert_node(long begin, long end){
@@ -108,16 +94,14 @@ void* _buddy_alloc(long n_bytes, btree root){
 	btree rchild = NULL;
 	//traverse in order
 	while(parent!=NULL){
-	lchild = parent->lchild;
-	rchild = parent->rchild;
         if(parent->size < n_bytes){//too deep into the tree
             printf("--PARENT TOO SMALL-- n_bytes: %lu size: %lu\n", n_bytes, parent->size);
             return NULL;
         }		
 		if(parent->lchild != NULL)
-			return _buddy_alloc(n_bytes, parent->lchild);
+			 _buddy_alloc(n_bytes, parent->lchild);
 		if(parent->rchild != NULL)
-			return _buddy_alloc(n_bytes, parent->rchild);
+			 _buddy_alloc(n_bytes, parent->rchild);
 		else{
 			//if leaf
 			//if block is empty and correct size
