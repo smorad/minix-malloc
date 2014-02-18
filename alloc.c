@@ -153,7 +153,7 @@ void* _buddy_alloc(long n_bytes, btree root, void* data){
 				return root->seg_start;
 			}
 			else{
-				printf("creating child\n");
+				//printf("creating child\n");
 				//split block into children
 				//these conflict, fix later
 				if(((root->seg_end/2)-root->seg_beg) < n_bytes) return NULL;	//just in case so we don't get stuck in inf loop
