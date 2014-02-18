@@ -37,6 +37,7 @@ struct binary_tree{
 typedef struct binary_tree *btree;
 
 btree trees[1024];
+void* data[1024];	//our memory contents
 
 int btree_count = 0;
 
@@ -96,77 +97,70 @@ int _buddy_init(long n_bytes, int parm1){
 	return btree_count++;
 }
 
-
-
-
-
-
-
-
-
-
-void* _buddy_alloc_new(long n_bytes, btree root){
-	if(root==NULL) return;
-		if(root->lchild != NULL || root->rchild !=NULL){
-			if(root->lchild !=NULL)
-				_buddy_alloc_new(n_bytes, root->lchild);
-			if(root->rchild != NULL)
-				_buddy_alloc_new(n_bytes, root->rchild);
+btree find_by_region(btree root, void* region){	//will return node with segment, also will coalesce empty blocks
+	if((root-> lchild !=NULL && root->lchild->taken == 0 )&&( root->rchild !=NULL && root->rchild->taken==0)){//coalesce
+		if(root->rchild->rchild == NULL && root->rchild->lchild == NULL && root->lchild->rchild == NULL && root->lchild->lchild == NULL){//make sure rchild and lchild are leaves
+			free(root->lchild);//might need to free all children's children recursively too
+			free(root->rchild);
+			root->rchild = NULL;
+			root->lchild = NULL;
 		}
-		else{//leaf
-			if(root->size == n_bytes){
-				root->taken = 1;
-				return root->seg_start;
-			}
-			else if(root->size > n_bytes){
 
-			}
+	}	
+	if(root->lchild!=NULL)
+		find_by_region(root->lchild, region);
 
-
-		}
+	if(root->rchild!=NULL)
+		find_by_region(root->rchild, region);
+	
+	//if leaf
+	if(root->seg_start == region)
+		return root;
 }
 
 
-
-
-
-
-
-
-
-
+void _free_buddy(void* region){
+	int i;
+	btree found_node = NULL;
+	for(i=0; i<btree_count; i++){
+		found_node = find_by_region(trees[btree_count], region);
+	}
+	if(found_node!=NULL){
+		found_node->taken = 0;
+	}
+}
 
 void* _buddy_alloc(long n_bytes, btree root){
-	btree parent = root;
 	//traverse in order
-	if (parent==NULL) return;
-        if(parent->size < n_bytes){//too deep into the tree
-            printf("--PARENT TOO SMALL-- ptr: %p n_bytes: %lu size: %lu\n", parent, n_bytes, parent->size);
+	if (root==NULL) return;
+        if(root->size < n_bytes){//too deep into the tree
+            printf("--PARENT TOO SMALL-- ptr: %p n_bytes: %lu size: %lu\n", root, n_bytes, root->size);
             return NULL;
 
         }		
-		if(parent->lchild != NULL)
-			_buddy_alloc(n_bytes, parent->lchild);
-		if(parent->rchild != NULL)
-			_buddy_alloc(n_bytes, parent->rchild);
-		else if(parent->lchild == NULL && parent->rchild == NULL){ 	//if leaf
-			if(parent->taken==0 && (parent->size == n_bytes)){		//if block is empty and correct size
+		if(root->lchild != NULL)
+			_buddy_alloc(n_bytes, root->lchild);
+		if(root->rchild != NULL)
+			_buddy_alloc(n_bytes, root->rchild);
+		else if(root->lchild == NULL && root->rchild == NULL){ 	//if leaf
+			if(root->taken==0 && (root->size == n_bytes)){		//if block is empty and correct size
 				printf("***FOUND***");
-				printf("beg: %lu end: %lu\n", parent->seg_beg, parent->seg_end);
-				printf("psize: %lu n_bytes: %lu ptr: %lu\n\n\n", parent->size, n_bytes, parent);
-				parent->taken = true;
-				return parent->seg_start;
+				printf("beg: %lu end: %lu\n", root->seg_beg, root->seg_end);
+				printf("psize: %lu n_bytes: %lu ptr: %lu\n\n\n", root->size, n_bytes, root);
+				root->taken = true;
+				//return (data + beg);
+				return root->seg_start;
 			}
 			else{
 				printf("creating child\n");
 				//split block into children
 				//these conflict, fix later
-				if(((parent->seg_end/2)-parent->seg_beg) < n_bytes) return NULL;	//just in case so we don't get stuck in inf loop
-				parent->lchild = insert_node(parent->seg_beg, (parent->seg_end/2));
-				parent->rchild = insert_node(parent->seg_end/2+1, parent->seg_end+1);
+				if(((root->seg_end/2)-root->seg_beg) < n_bytes) return NULL;	//just in case so we don't get stuck in inf loop
+				root->lchild = insert_node(root->seg_beg, (root->seg_end/2));
+				root->rchild = insert_node(root->seg_end/2+1, root->seg_end+1);
 				//check again starting at current node
-				btree_debug(parent);
-				_buddy_alloc(n_bytes, parent);
+				btree_debug(root);
+				_buddy_alloc(n_bytes, root);
 			}
 		
 		}			
@@ -213,33 +207,6 @@ mem_ptr mp;
 	print_bitmap();
  }
 
-/*
- * Check the bitmap for a free area of the target size
- * size - # of pages
- * Returns index to the start of the free area
- * For Buddy
- * BROKEN RIGHT NOW
- */
-int buddy_area_free(int size){
-	int i;
-	int taken = 0;
-	int free = 0;
-	for(i = 0; i < mp.bitmap_size;){
-		printf("free: %d	taken: %d\n", free, taken);
-		// Go until a taken space is found
-		// Record size
-		while(!mp.bitmap[i++]){
-			if( i >= (mp.bitmap_size - 1) ) break;
-			free++;
-		}
-		// Free block of exact size found
-		if(free == size){
-			
-		}
-	}
-	// There is not enough free space
-	return ERROR;
-}
 
 /*
  * Check the bitmap for the first free area of the target size
@@ -302,49 +269,6 @@ long pow2(int parm1){
 	int rv = 1;
 	for(i = 0; i < parm1; i++) rv *= 2;
 	return rv;
-}
-/*
- * Allocates a size of memory n_bytes long.
- * Splits it into page sizes (2^parm1)
- */
-/*int buddy_init(long n_bytes, int parm1){	
-	if (!power2(n_bytes)){
-		printf("\n%lu: not a pow2\n", n_bytes);
-		return ERROR;
-	}
-	mp.beg = malloc(n_bytes);
-	if (mp.beg == NULL){
-		printf("beg = NULL\n");
-		return ERROR;
-	}
-	mp.page_size = pow2(parm1);
-	mp.bitmap_size = n_bytes/mp.page_size;
-	mp.bitmap = calloc(1, mp.bitmap_size);
-	mp.count++;
-	printf("parm1: %d\nbeg: %p\npage_size: %lu\nbitmap_size: %u\n", parm1, mp.beg, mp.page_size, mp.bitmap_size);
-	return BUDDY;
-}*/
-
-void* buddy_memalloc(long n_bytes, int handle){
-	// Set curr_size = to a power of 2 that is >= n_bytes
-	long curr_size = 1;
-	while(curr_size < n_bytes) curr_size *= 2;
-	printf("Curr_size first: %lu\n", curr_size);
-	// Divide by the minimum page size
-	// Will use this to pass to the areaa_free detector
-	// This is in blocks
-	curr_size /= mp.page_size;
-	printf("Curr_size: %lu\n", curr_size);
-	// Find free area
-    	int bitmap_loc = buddy_area_free(curr_size);
-      	if ( bitmap_loc == ERROR ){
-      		printf("Error: No space Found\n");
-      		return buddy_memalloc(handle, (pow2(curr_size +1)) );   // Check again for larger space
-      	}
-      	else{
-      		// Marks all as taken
-      		mark_mem(bitmap_loc, curr_size, TAKEN);
-      	}
 }
 
 /*
