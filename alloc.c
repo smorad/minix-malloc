@@ -51,6 +51,24 @@ void btree_debug(btree parent){
 
 }
 
+void print_memtree(btree root){
+	btree leaves[1024];
+	int leaf_count = 0;
+	//traverse in order
+	while(root!=NULL){
+		if(root-> lchild == NULL && root->rchild==NULL){
+			leaves[leaf_count++] = root;
+		}
+	}
+		int i;
+		for(i=0; i<leaf_count; i++){
+			if(leaves[i]->taken)
+				printf("%lu XX", leaves[i]->seg_beg);
+			else
+				printf("%lu __", leaves[i]->seg_beg);
+		}
+}
+
 btree insert_node(long begin, long end){
 	btree new = malloc(sizeof(struct binary_tree));
 	assert(new!=NULL);
@@ -99,9 +117,10 @@ void* _buddy_alloc(long n_bytes, btree root){
 		else{
 			//if leaf
 			//if block is empty and correct size
-			if(parent->taken==0 && (parent->size == n_bytes) || (parent->size== n_bytes-1)){
+			if(parent->taken==0 && (parent->size == n_bytes)){
 				printf("***FOUND***\n\n\n");
 				parent->taken = true;
+				//print_memtree(trees[0]);
 				return parent->seg_start;
 			}
 			else{
@@ -119,6 +138,7 @@ void* _buddy_alloc(long n_bytes, btree root){
 			
 	}
 }
+
 
 mem_ptr mp;
 

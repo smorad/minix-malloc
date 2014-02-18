@@ -1,7 +1,8 @@
 #include "alloc.h"
 #include <stdio.h>
+#include <stdlib.h>
 
-int main(){
+void test_list(){
 	int handle;
 	// First fit  = 0x08
 	handle = meminit(4096, 0x10, 4, 0);
@@ -21,4 +22,32 @@ int main(){
 	memfree(mem_area4);
 	memfree(mem_area5);
 	mem_area1 = memalloc(64,handle);
+}
+
+
+void test_buddy(){
+	int handle = meminit(4096, 0x1, 4, 0);
+	printf("ptr: %p\n", memalloc(128, handle));
+	printf("ptr: %p\n", memalloc(256, handle));
+	printf("ptr: %p\n", memalloc(128, handle));
+}
+
+void aux_test_buddy(){
+	void* h1 = memalloc(128, 0);
+	void* h2 = memalloc(256, 0);
+	void* h3 = memalloc(128, 0);
+	int i;
+	for(i=0; i<128/(sizeof (int)); i++){
+		((int*)h1)[i] = i;
+		printf("%d==%d\n", i, ((int*)h1)[i]);
+	}
+		
+}
+
+int main(){
+	char* test = malloc(1024);
+	test_buddy();
+	aux_test_buddy();
+	//test_list();
+	
 }
