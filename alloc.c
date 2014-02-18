@@ -51,8 +51,16 @@ void btree_debug(btree parent){
 
 }
 
-void print_memtree(btree root){
-	
+void print_memtree(btree root, int start){
+	start++;
+	if(root->rchild!=NULL)
+		print_memtree(root->rchild, start);
+	int i;
+	for(i=0; i<=start; i++)
+		printf("     ");
+	printf("%lu\n", root->size);
+	if(root->lchild !=NULL)
+		print_memtree(root->lchild, start);
 }
 
 btree insert_node(long begin, long end){
@@ -88,43 +96,80 @@ int _buddy_init(long n_bytes, int parm1){
 	return btree_count++;
 }
 
+
+
+
+
+
+
+
+
+
+void* _buddy_alloc_new(long n_bytes, btree root){
+	if(root==NULL) return;
+		if(root->lchild != NULL || root->rchild !=NULL){
+			if(root->lchild !=NULL)
+				_buddy_alloc_new(n_bytes, root->lchild);
+			if(root->rchild != NULL)
+				_buddy_alloc_new(n_bytes, root->rchild);
+		}
+		else{//leaf
+			if(root->size == n_bytes){
+				root->taken = 1;
+				return root->seg_start;
+			}
+			else if(root->size > n_bytes){
+
+			}
+
+
+		}
+}
+
+
+
+
+
+
+
+
+
+
+
 void* _buddy_alloc(long n_bytes, btree root){
 	btree parent = root;
-	btree lchild = NULL;
-	btree rchild = NULL;
 	//traverse in order
-	while(parent!=NULL){
+	if (parent==NULL) return;
         if(parent->size < n_bytes){//too deep into the tree
-            printf("--PARENT TOO SMALL-- n_bytes: %lu size: %lu\n", n_bytes, parent->size);
+            printf("--PARENT TOO SMALL-- ptr: %p n_bytes: %lu size: %lu\n", parent, n_bytes, parent->size);
             return NULL;
+
         }		
 		if(parent->lchild != NULL)
-			 _buddy_alloc(n_bytes, parent->lchild);
+			_buddy_alloc(n_bytes, parent->lchild);
 		if(parent->rchild != NULL)
-			 _buddy_alloc(n_bytes, parent->rchild);
-		else{
-			//if leaf
-			//if block is empty and correct size
-			if(parent->taken==0 && (parent->size == n_bytes)){
-				printf("***FOUND***\n\n\n");
+			_buddy_alloc(n_bytes, parent->rchild);
+		else if(parent->lchild == NULL && parent->rchild == NULL){ 	//if leaf
+			if(parent->taken==0 && (parent->size == n_bytes)){		//if block is empty and correct size
+				printf("***FOUND***");
+				printf("beg: %lu end: %lu\n", parent->seg_beg, parent->seg_end);
+				printf("psize: %lu n_bytes: %lu ptr: %lu\n\n\n", parent->size, n_bytes, parent);
 				parent->taken = true;
-				//print_memtree(trees[0]);
 				return parent->seg_start;
 			}
 			else{
 				printf("creating child\n");
 				//split block into children
 				//these conflict, fix later
+				if(((parent->seg_end/2)-parent->seg_beg) < n_bytes) return NULL;	//just in case so we don't get stuck in inf loop
 				parent->lchild = insert_node(parent->seg_beg, (parent->seg_end/2));
 				parent->rchild = insert_node(parent->seg_end/2+1, parent->seg_end+1);
 				//check again starting at current node
 				btree_debug(parent);
-				return _buddy_alloc(n_bytes, parent);
+				_buddy_alloc(n_bytes, parent);
 			}
 		
-		}
-			
-	}
+		}			
 }
 
 
