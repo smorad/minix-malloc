@@ -131,12 +131,14 @@ void _free_buddy(void* region){
 	}
 }
 
+btree result_ptr = NULL; //in case we return null after finding value
+
 void* _buddy_alloc(long n_bytes, btree root, void* data){
 	//traverse in order
 	if (root==NULL) return;
         if(root->size < n_bytes){//too deep into the tree
             printf("--PARENT TOO SMALL-- ptr: %p n_bytes: %lu size: %lu\n", root, n_bytes, root->size);
-            return NULL;
+            return result_ptr;
 
         }		
 		if(root->lchild != NULL)
@@ -149,14 +151,14 @@ void* _buddy_alloc(long n_bytes, btree root, void* data){
 				printf("beg: %lu end: %lu\n", root->seg_beg, root->seg_end);
 				printf("psize: %lu n_bytes: %lu ptr: %lu mem_seg: %p\n\n\n ", root->size, n_bytes, root, root->seg_start);
 				root->taken = true;
-				//return (data + beg);
+				result_ptr = root->seg_start;
 				return root->seg_start;
 			}
 			else{
 				//printf("creating child\n");
 				//split block into children
 				//these conflict, fix later
-				if(((root->seg_end/2)-root->seg_beg) < n_bytes) return NULL;	//just in case so we don't get stuck in inf loop
+				if(((root->seg_end/2)-root->seg_beg) < n_bytes) return result_ptr;	//just in case so we don't get stuck in inf loop
 				root->lchild = insert_node(root->seg_beg, (root->seg_end/2), data);
 				root->rchild = insert_node(root->seg_end/2+1, root->seg_end+1, data);
 				//check again starting at current node

@@ -1,6 +1,7 @@
 #include "alloc.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 typedef struct{
 	int f1;
@@ -9,6 +10,10 @@ typedef struct{
 	long f4;
 
 }test;
+
+typedef struct{
+	long long big_arr[65535];
+}big;
 
 void test_list(){
 	int handle;
@@ -45,7 +50,7 @@ void aux_test_buddy(){
 	void* h2 = memalloc(256, 0);
 	void* h3 = memalloc(128, 0);
 	test *t = memalloc(sizeof(test), 0);
-	printf("assigning %p->%p to 1\n", t, t->f1);
+	printf("assigning %p->f1 to 1\n. %p->f1==%d", t,t, t->f1);
 	t->f1 = 1;
 	t->f2 = 2;
 	t->f3 = 3;
@@ -59,10 +64,22 @@ void aux_test_buddy(){
 		
 }
 
+
+void speed_test_buddy(){
+	clock_t start = clock();
+	int i;
+	big *b;
+	for(i=0; i<1024; i++)
+		b = memalloc(128, i);	
+	clock_t end = clock();
+	printf("buddy speed test: %u\n", (float)(end-start/CLOCKS_PER_SEC));
+}
+
 int main(){
 	char* test = malloc(1024);
-	test_buddy();
-	aux_test_buddy();
+	//test_buddy();
+	//aux_test_buddy();
+	speed_test_buddy();
 	//test_list();
 	
 }
