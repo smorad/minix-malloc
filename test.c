@@ -2,6 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef struct{
+	int f1;
+	int f2;
+	long f3;
+	long f4;
+
+}test;
+
 void test_list(){
 	int handle;
 	// First fit  = 0x08
@@ -36,11 +44,17 @@ void aux_test_buddy(){
 	void* h1 = memalloc(128, 0);
 	void* h2 = memalloc(256, 0);
 	void* h3 = memalloc(128, 0);
+	test *t = memalloc(sizeof(test), 0);
+	t->f1 = 1;
+	t->f2 = 2;
+	t->f3 = 3;
+	t->f4 = 4;
 	int i;
-	for(i=0; i<128/(sizeof (int)); i++){
+/*	for(i=0; i<128/(sizeof (int)); i++){
 		((int*)h1)[i] = i;
 		printf("%d==%d\n", i, ((int*)h1)[i]);
-	}
+	}*/
+
 		
 }
 
