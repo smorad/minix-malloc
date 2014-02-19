@@ -69,12 +69,14 @@ void speed_test_buddy(){
 	int h = meminit(65536, 0x1, 4, 0);
 	clock_t start = clock();
 	int k;
-	for(k=0; k<1000; k++){
+//	for(k=0; k<10; k++){
 		int i;
 		big *b;
-		for(i=0; i<1024; i++)
+		for(i=0; i<128; i++){
 			b = memalloc(128, h);	
-	}
+			b->big_arr[0] = 1;
+		}
+//	}
 	clock_t end = clock();
 	printf("buddy speed test: %g seconds\n start: %g\n end: %g\n", (double)(end-start)/CLOCKS_PER_SEC, (double)start, (double)end);
 }
@@ -98,7 +100,7 @@ int main(){
 	//test_buddy();
 	//aux_test_buddy();
 	speed_test_buddy();
-	speed_test_list();
+//	speed_test_list();
 	//test_list();
 	
 }
