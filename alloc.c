@@ -417,6 +417,7 @@ void* memalloc(long n_bytes, int handle){
 			printf("Memory not initialized correctly\n");
 			return NULL;
 		default:
+			printf("n_bytes: %lu\n", n_bytes);
 			return list_memalloc(n_bytes, handle);
 	}
 	return NULL;
