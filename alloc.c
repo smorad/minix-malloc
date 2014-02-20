@@ -306,7 +306,7 @@ void* list_memalloc(long n_bytes, int handle){
       		// Marks all as taken
       		mark_mem(bitmap_loc, curr_size, TAKEN);
       		header = mp.beg + (bitmap_loc * mp.page_size);
-      		*((long*)header[0]) = n_bytes;
+      		*((long*)header) = n_bytes;
       		mem_ptr = mp.beg + (bitmap_loc * mp.page_size) + (sizeof(long));
       		printf("mem_ptr: %p\n", mem_ptr);
       		return mem_ptr;
