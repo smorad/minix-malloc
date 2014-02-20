@@ -87,18 +87,32 @@ void speed_test_buddy(){
 	printf("buddy speed test: %g seconds\n start: %g\n end: %g\n", (double)(end-start)/CLOCKS_PER_SEC, (double)start, (double)end);
 }
 
-void speed_test_list(){
-	int h = meminit(65536, 0x10, 4, 0);
+void speed_test_list(unsigned flags, unsigned page_size){
+	int h = meminit(65536, flags, page_size, 0);
 	clock_t start = clock();
 	int k;
-	//for(k=0; k<128; k++){
-		int i;
-		big *b;
-		for(i=0; i<1024; i++)
-			b = memalloc(128, h);	
-	//}
+	int i;
+	big *b;
+	for(i=0; i<1024; i++)
+		b = memalloc(128, h);	
 	clock_t end = clock();
 	printf("buddy speed test: %g seconds\n start: %g\n end: %g\n", (double)(end-start)/CLOCKS_PER_SEC, (double)start, (double)end);
+}
+
+
+void speed_test_all(unsigned page_size){
+	printf("BUDDY page size: %u\n", page_size);
+	speed_test_buddy(0x1, page_size);
+	printf("FIRST FIT page size: %u\n", page_size);
+	speed_test_list(0x4 | 0x0, page_size); //first fit
+	printf("NEXT FIT page size: %u\n", page_size);
+	speed_test_list(0x4 | 0x8, page_size); //next fit
+	printf("BEST FIT page size: %u\n", page_size);
+	speed_test_list(0x4 | 0x10, page_size); //best fit
+	printf("WORST FIT page size: %u\n", page_size);
+	speed_test_list(0x4 | 0x20, page_size); //worst fit
+	printf("RANDOM FIT page size: %u\n", page_size);
+	speed_test_list(0x4 | 0x40, page_size); //random fit
 }
 
 int main(){
@@ -106,7 +120,18 @@ int main(){
 	//test_buddy();
 	//aux_test_buddy();
 	//speed_test_buddy();
-//	speed_test_list();
-	test_list();
+	/*speed_test_list(0x4 | 0x0, 4); //first fit
+	speed_test_list(0x4 | 0x8, 4); //next fit
+	speed_test_list(0x4 | 0x10, 4); //best fit
+	speed_test_list(0x4 | 0x20, 4); //worst fit
+	speed_test_list(0x4 | 0x40, 4); //random fit*/
+	
+	speed_test_all(4);
+	speed_test_all(8);
+	speed_test_all(16);
+	speed_test_all(32);
+	speed_test_all(64);
+
+//	test_list();
 	
 }
