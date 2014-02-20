@@ -370,32 +370,32 @@ void* list_memalloc(long n_bytes, int handle){
 int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 	int rv;
 	mp.count = 0;	
-	if((flags & 0x1)==0x1){
+	if(flags==0x1){
 		//printf("0x1\n");
 		rv = _buddy_init(n_bytes, parm1);
 		
 	}
-	else if((flags & 0x00)==0x00){
+	else if(flags==(0x00 | 0x4)){
 		printf("FIRST FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
 		if(rv != ERROR) rv = FIRST;
 	}
-	else if ((flags & 0x08)==0x08){
+	else if (flags==(0x08| 0x4)){
 		printf("NEXT FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
 		if(rv != ERROR) rv = NEXT;
 	}
-	else if ((flags & 0x10)==0x10){
+	else if (flags==(0x10| 0x4)){
 		printf("BEST FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
 		if(rv != ERROR) rv = BEST;
 	}
-	else if ((flags & 0x20)==0x20){
+	else if (flags==(0x20| 0x4)){
 		printf("WORST FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
 		if(rv != ERROR) rv = WORST;
 	}
-	else if ((flags & 0x40)==0x40){
+	else if (flags==(0x40| 0x4)){
 		printf("RANDOM FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
 		if(rv != ERROR) rv = RANDOM;
