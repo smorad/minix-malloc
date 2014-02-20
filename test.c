@@ -18,7 +18,7 @@ typedef struct{
 void test_list(){
 	int handle;
 	// First fit  = 0x08
-	handle = meminit(4096, 0x20, 4, 0);
+	handle = meminit(4096, 0x24, 4, 0);
 	if(handle == -1){
 		printf("handle == -1\n");
 	}
