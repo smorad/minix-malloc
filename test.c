@@ -39,7 +39,7 @@ void test_list(){
 	*/
 	int* test_array = memalloc(sizeof(int),handle);
 	test_array[0] = 32;
-	printf("Test_array[0]: %d", test_array[0]);
+	printf("Test_array[0]: %d\n", test_array[0]);
 }
 
 
