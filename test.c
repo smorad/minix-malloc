@@ -18,7 +18,7 @@ typedef struct{
 void test_list(){
 	int handle;
 	// First fit  = 0x08
-	handle = meminit(4096, 0x10, 4, 0);
+	handle = meminit(4096, 0x20, 4, 0);
 	if(handle == -1){
 		printf("handle == -1\n");
 	}
@@ -40,6 +40,7 @@ void test_list(){
 	int* test_array = memalloc(sizeof(int),handle);
 	test_array[0] = 32;
 	printf("Test_array[0]: %d\n", test_array[0]);
+	memfree(test_array);
 }
 
 
