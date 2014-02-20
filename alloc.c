@@ -432,6 +432,7 @@ void memfree(void *region){
 	long free_size;
 	mem_index = (unsigned)(region - mp.beg);
 	bitmap_index = (mem_index/mp.page_size);
+	printf("\n\nREGION: %p\n\nsizeof(long): %u\n\n", region, sizeof(long));
 	find_len = region - (sizeof(long));
 	free_size = *((long *)find_len);
 	printf("Bitmap index freed: %u		of size: %d\n", bitmap_index, free_size );
