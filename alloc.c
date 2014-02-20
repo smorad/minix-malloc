@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
+#include <limits.h>
 
 #define true 1
 #define false 0
@@ -229,11 +230,40 @@ int first_area_free(int size){
 	for(i = 0; i < mp.bitmap_size; i++){
 		// Check to see if there is enough free space
 		if(count >= size){
-			printf("Found a location of size %d	at: %d\n", size, (i - count));
 			return (i - count);
 		}
 		if(mp.bitmap[i] == TAKEN) count = 0;
 		else count++;
+	}
+	// There is not enough free space
+	printf("Not enough room for block of size %d\n", size);
+	return ERROR;
+}
+
+/*
+ * Check the bitmap for the best free area of the target size
+ * size - # of pages
+ * Returns the beginning indiex in the bitmap
+ * For freelist
+ */
+int best_area_free(int size){
+	int i;
+	int best_index = -1;
+	int best = INT_MAX;
+	int count = 0;
+	for(i = 0; i < mp.bitmap_size; i++){
+		// Check edge case for end of free list
+		if( mp.bitmap[i] == TAKEN || (i == (mp.bitmap_size - 1)) ){
+			if(count >= size && count <= best){
+				best_index = i;
+				best = count;
+			}
+			count = 0;
+		}
+		else count++;
+	}
+	if(best_index != ERROR){
+		return (best_index - best);
 	}
 	// There is not enough free space
 	printf("Not enough room for block of size %d\n", size);
@@ -252,16 +282,17 @@ int worst_area_free(int size){
 	int worst = 0;
 	int count = 0;
 	for(i = 0; i < mp.bitmap_size; i++){
-		// Check to see if there is enough free space
-		if(count >= size && count >= worst){
-			worst_index = i;
-			worst = count;
+		// Check edge case for end of free list
+		if( mp.bitmap[i] == TAKEN || (i == (mp.bitmap_size - 1)) ){
+			if(count >= size && count >= worst){
+				worst_index = i;
+				worst = count;
+			}
+			count = 0;
 		}
-		if(mp.bitmap[i] == TAKEN) count = 0;
 		else count++;
 	}
 	if(worst_index != ERROR){
-		printf("Found location for worst here: %d\n", (worst_index - worst));
 		return (worst_index - worst);
 	}
 	// There is not enough free space
@@ -286,7 +317,6 @@ int next_area_free(int size){
 		}
 		// Check to see if there is enough free space
 		if(count >= size){
-			printf("Found a location of size %d	at: %d\n", size, (curr_index - count));
 			return (curr_index - count);
 		}
 		if(mp.bitmap[curr_index] == TAKEN) count = 0;
@@ -336,7 +366,7 @@ void* list_memalloc(long n_bytes, int handle){
     			bitmap_loc = worst_area_free(curr_size);
     			break;
     		case BEST: 
-    			bitmap_loc = worst_area_free(curr_size);
+    			bitmap_loc = best_area_free(curr_size);
     			break;
 	}
       	if ( bitmap_loc == ERROR ){
