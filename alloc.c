@@ -11,7 +11,9 @@
 #define FIRST 1
 #define NEXT 2
 #define BEST 3
-#define LIST 4
+#define WORST 4
+#define RANDOM 5
+#define LIST 6
 #define ERROR -1
 
 
@@ -239,6 +241,34 @@ int first_area_free(int size){
 }
 
 /*
+ * Check the bitmap for the worst free area of the target size
+ * size - # of pages
+ * Returns the beginning indiex in the bitmap
+ * For freelist
+ */
+int worst_area_free(int size){
+	int i;
+	int worst_index = -1;
+	int worst = 0;
+	int count = 0;
+	for(i = 0; i < mp.bitmap_size; i++){
+		// Check to see if there is enough free space
+		if(count >= size && count >= worst){
+			worst_index = i;
+			worst = count;
+		}
+		if(mp.bitmap[i] == TAKEN) count = 0;
+		else count++;
+	}
+	if(worst_index != ERROR){
+		return (worst_index - worst);
+	}
+	// There is not enough free space
+	printf("Not enough room for block of size %d\n", size);
+	return ERROR;
+}
+
+/*
  * Check the bitmap for the next free area of the target size
  * size - # of pages
  * Returns the beginning indiex in the bitmap
@@ -297,6 +327,12 @@ void* list_memalloc(long n_bytes, int handle){
     		case NEXT: 
     			bitmap_loc = next_area_free(curr_size);
     			break;
+    		case WORST: 
+    			bitmap_loc = worst_area_free(curr_size);
+    			break;
+    		case BEST: 
+    			bitmap_loc = worst_area_free(curr_size);
+    			break;
 	}
       	if ( bitmap_loc == ERROR ){
       		printf("Error: No space Found\n");
@@ -339,18 +375,31 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 		rv = _buddy_init(n_bytes, parm1);
 		
 	}
-	else if((flags & 0x08)==0x08){
+	else if((flags & 0x00)==0x00){
 		printf("FIRST FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
 		if(rv != ERROR) rv = FIRST;
 	}
-	else if ((flags & 0x10)==0x10){
+	else if ((flags & 0x08)==0x08){
 		printf("NEXT FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
 		if(rv != ERROR) rv = NEXT;
 	}
-	else if ((flags & 0x20)==0x20){printf("0x20\n");}
-	else if ((flags & 0x40)==0x40){printf("0x40\n");}
+	else if ((flags & 0x10)==0x10){
+		printf("BEST FIT\n");
+		rv = list_init(n_bytes, parm1, parm2);
+		if(rv != ERROR) rv = BEST;
+	}
+	else if ((flags & 0x20)==0x20){
+		printf("WORST FIT\n");
+		rv = list_init(n_bytes, parm1, parm2);
+		if(rv != ERROR) rv = WORST;
+	}
+	else if ((flags & 0x40)==0x40){
+		printf("RANDOM FIT\n");
+		rv = list_init(n_bytes, parm1, parm2);
+		if(rv != ERROR) rv = RANDOM;
+	}
 	else{
 		printf("Invalid bits set: %#010x\n", flags);
 	}
