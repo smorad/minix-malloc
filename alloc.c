@@ -284,6 +284,7 @@ long pow2(int parm1){
 void* list_memalloc(long n_bytes, int handle){
 	// Return pointer in memory
 	void *mem_ptr;
+	void *header;
 	// Find free area
 	long curr_size;
 	curr_size = (n_bytes/mp.page_size);
@@ -304,7 +305,9 @@ void* list_memalloc(long n_bytes, int handle){
       	else{
       		// Marks all as taken
       		mark_mem(bitmap_loc, curr_size, TAKEN);
-      		mem_ptr = (mp.beg + (bitmap_loc * mp.page_size));
+      		header = mp.beg + (bitmap_loc * mp.page_size);
+      		*header = n_bytes;
+      		mem_ptr = mp.beg + (bitmap_loc * mp.page_size) + (sizeof(long)));
       		printf("mem_ptr: %p\n", mem_ptr);
       		return mem_ptr;
       	}
@@ -369,10 +372,12 @@ void* memalloc(long n_bytes, int handle){
 }
 
 void memfree(void *region){
+	void *find_len;
 	unsigned mem_index, bitmap_index, free_size;
 	mem_index = (unsigned)(region - mp.beg);
 	bitmap_index = (mem_index/mp.page_size);
-	free_size = 8; // dummy value until i figure out how to actually do it
+	find_len = region - (sizeof(long));
+	free_size = (long)*find_len;
 	printf("Bitmap index freed: %u		of size: %d\n", bitmap_index, free_size );
 	mark_mem(bitmap_index, free_size, FREE);
 }
