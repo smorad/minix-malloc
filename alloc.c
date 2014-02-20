@@ -319,7 +319,10 @@ void* list_memalloc(long n_bytes, int handle){
 	// Find free area
 	long curr_size;
 	curr_size = (n_bytes/mp.page_size);
-	printf("Curr_size: %lu\n", curr_size);
+	/* Fixes values smaller than one page */
+	if(curr_size == 0){
+		curr_size = 1;
+	}
 	int bitmap_loc;
 	/* Switch for different list cases */
 	switch(handle){
