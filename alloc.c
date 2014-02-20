@@ -306,8 +306,8 @@ void* list_memalloc(long n_bytes, int handle){
       		// Marks all as taken
       		mark_mem(bitmap_loc, curr_size, TAKEN);
       		header = mp.beg + (bitmap_loc * mp.page_size);
-      		(long)*header = n_bytes;
-      		mem_ptr = mp.beg + (bitmap_loc * mp.page_size) + (sizeof(long)));
+      		*((long*)header[0]) = n_bytes;
+      		mem_ptr = mp.beg + (bitmap_loc * mp.page_size) + (sizeof(long));
       		printf("mem_ptr: %p\n", mem_ptr);
       		return mem_ptr;
       	}
@@ -373,7 +373,8 @@ void* memalloc(long n_bytes, int handle){
 
 void memfree(void *region){
 	void *find_len;
-	unsigned mem_index, bitmap_index, free_size;
+	unsigned mem_index, bitmap_index;
+	long free_size;
 	mem_index = (unsigned)(region - mp.beg);
 	bitmap_index = (mem_index/mp.page_size);
 	find_len = region - (sizeof(long));
