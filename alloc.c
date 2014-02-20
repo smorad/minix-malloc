@@ -487,14 +487,28 @@ void memfree(void *region){
 	long free_size;
 	mem_index = (unsigned)(region - mp.beg);
 	bitmap_index = (mem_index/mp.page_size);
-	find_len = region - (sizeof(long));
+	find_len = region - (sizeof(long));
 	free_size = *((long *)find_len);
 	free_size = (free_size/mp.page_size);
 	/* Fixes values smaller than one page */
 	if(free_size == 0){
-		free_size = 1;
+		free_size = 1;
 	}
 	/* Convert free_size to blocks */
 	printf("Bitmap index freed: %u		of size: %d\n", bitmap_index, free_size );
 	mark_mem(bitmap_index, free_size, FREE);
+}
+
+void count_holes(int handle){
+	//int num_free, num_taken, size_free, size_taken;
+	//for each page in handle
+		//if page->taken
+			//num_taken++
+			//size_taken += page_size
+		//else
+			//num_free++
+			//size_free += page_size
+		//size_taken = size_taken/num_pages
+		//size_free = size_free/num_pages
+		
 }
