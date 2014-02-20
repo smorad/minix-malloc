@@ -330,6 +330,27 @@ int next_area_free(int size){
 	return ERROR;
 }
 
+/*
+ * Check the bitmap for a random free area of the target size
+ * size - # of pages
+ * Returns the beginning indiex in the bitmap
+ * For freelist
+ */
+int next_area_free(int size){
+	int choose_random;
+	choose_random = rand()%4;
+	switch(choose_random){
+		case 0:
+			return first_area_free(size);
+		case 1:
+			return next_area_free(size);
+		case 2:
+			return worst_area_free(size);
+		case 3:
+			return best_area_free(size);
+	}
+}
+
 
 
 long pow2(int parm1){
@@ -367,6 +388,9 @@ void* list_memalloc(long n_bytes, int handle){
     			break;
     		case BEST: 
     			bitmap_loc = best_area_free(curr_size);
+    			break;
+    		case RANDOM: 
+    			bitmap_loc = random_area_free(curr_size);
     			break;
 	}
       	if ( bitmap_loc == ERROR ){
@@ -437,6 +461,7 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 	}
 	else{
 		printf("Invalid bits set: %#010x\n", flags);
+		exit(1);
 	}
 	return rv;
 }
