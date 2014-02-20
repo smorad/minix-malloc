@@ -29,6 +29,7 @@ typedef struct {
 
 struct binary_tree{
 	int taken;
+	int should_free;
 	long size;
 	long seg_beg;
 	long seg_end;
@@ -77,6 +78,7 @@ btree insert_node(long begin, long end, void* data){
 	new->lchild = NULL;
 	new->rchild = NULL;
 	new->taken = false;
+	new->should_free = 0;
 	new->seg_start = data + begin;
 	new->seg_beg = begin;
 	new->seg_end = end;
@@ -103,14 +105,22 @@ int _buddy_init(long n_bytes, int parm1){
 }
 
 btree find_by_region(btree root, void* region){	//will return node with segment, also will coalesce empty blocks
-	if((root-> lchild !=NULL && root->lchild->taken == 0 )&&( root->rchild !=NULL && root->rchild->taken==0)){//coalesce
-		if(root->rchild->rchild == NULL && root->rchild->lchild == NULL && root->lchild->rchild == NULL && root->lchild->lchild == NULL){//make sure rchild and lchild are leaves
-			free(root->lchild);//might need to free all children's children recursively too
-			free(root->rchild);
-			root->rchild = NULL;
-			root->lchild = NULL;
-		}
-
+	// case 1: left free right taken
+	if( (root->lchild->should_free) && !(root->rchild->should_free) ){
+		root->lchild->taken = 0;
+		root->lchild->should_free = 0;
+	}
+	// case 2: right free left taken
+	else if( !(root->lchild->should_free) && (root->rchild->should_free) ){
+		root->rchild->taken = 0;
+		root->rchild->should_free = 0;
+	}
+	// case 3: right free left left
+	else if( (root->lchild->should_free) && (root->rchild->should_free) ){//coalesce
+		free(root->rchild);
+		free(root->lchild);
+		root->lchild = NULL;
+		root->rchild = NULL;
 	}	
 	if(root->lchild!=NULL)
 		find_by_region(root->lchild, region);
@@ -121,6 +131,11 @@ btree find_by_region(btree root, void* region){	//will return node with segment,
 	//if leaf
 	if(root->seg_start == region)
 		return root;
+		
+	if(root->lchild==NULL && root->rchild==NULL && root->taken == 0){
+		root->should_free = 1;
+		return ;
+	}
 }
 
 
@@ -139,41 +154,41 @@ btree result_ptr = NULL; //in case we return null after finding value
 
 void* _buddy_alloc(long n_bytes, btree root, void* data){
 	//traverse in order
-	if (root==NULL) return;
-	if (result_ptr != NULL) return; //found our result, don't want to overwrite
-  if(root->size < n_bytes){//too deep into the tree
-            //printf("--PARENT TOO SMALL-- ptr: %p n_bytes: %lu size: %lu\n", root, n_bytes, root->size);
-    return result_ptr;
-  }		
-		if(root->lchild != NULL)
-			_buddy_alloc(n_bytes, root->lchild, data);
-		if(root->rchild != NULL)
-			_buddy_alloc(n_bytes, root->rchild, data);
-		if(root->lchild == NULL && root->rchild == NULL){ 	//if leaf
-			if(root->taken==0 && (root->size == n_bytes)){		//if block is empty and correct size
-				printf("***FOUND***");
-				printf("beg: %lu end: %lu\n", root->seg_beg, root->seg_end);
-				printf("psize: %lu n_bytes: %lu ptr: %lu mem_seg: %p\n\n\n ", root->size, n_bytes, root, root->seg_start);
-				root->taken = true;
-				result_ptr = root->seg_start;
-				return root->seg_start;
-			}
-			else{
-				//printf("creating child\n");
-				//split block into children
-				//these conflict, fix later
+	if(root==NULL) return NULL;
+	if(result_ptr != NULL) return; //found our result, don't want to overwrite
+  	if(root->size < n_bytes){//too deep into the tree
+            	//printf("--PARENT TOO SMALL-- ptr: %p n_bytes: %lu size: %lu\n", root, n_bytes, root->size);
+		 return result_ptr;
+  	}		
+	if(root->lchild != NULL)
+		_buddy_alloc(n_bytes, root->lchild, data);
+	if(root->rchild != NULL)
+		_buddy_alloc(n_bytes, root->rchild, data);
+	if(root->lchild == NULL && root->rchild == NULL){ 	//if leaf
+		if(root->taken==0 && (root->size == n_bytes)){		//if block is empty and correct size
+			printf("***FOUND***");
+			printf("beg: %lu end: %lu\n", root->seg_beg, root->seg_end);
+			printf("psize: %lu n_bytes: %lu ptr: %lu mem_seg: %p\n\n\n ", root->size, n_bytes, root, root->seg_start);
+			root->taken = true;
+			result_ptr = root->seg_start;
+			return root->seg_start;
+		}
+		else{
+			//printf("creating child\n");
+			//split block into children
+			//these conflict, fix later
 /*				if(((root->seg_end/2)-root->seg_beg) < n_bytes){ 
-					//printf("child would be too small\n");
-					return result_ptr;	//just in case so we don't get stuck in inf loop
-				}*/
-				root->lchild = insert_node(root->seg_beg, ((root->seg_beg + root->seg_end)/2), data);
-				root->rchild = insert_node(((root->seg_beg + root->seg_end)/2)+1, root->seg_end+1, data);
-				//check again starting at current node
-				btree_debug(root);
-				_buddy_alloc(n_bytes, root, data);
-			}
-		
-		}			
+				//printf("child would be too small\n");
+				return result_ptr;	//just in case so we don't get stuck in inf loop
+			}*/
+			root->lchild = insert_node(root->seg_beg, ((root->seg_beg + root->seg_end)/2), data);
+			root->rchild = insert_node(((root->seg_beg + root->seg_end)/2)+1, root->seg_end+1, data);
+			//check again starting at current node
+			btree_debug(root);
+			_buddy_alloc(n_bytes, root, data);
+		}
+	
+	}			
 }
 
 
