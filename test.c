@@ -22,6 +22,7 @@ void test_list(){
 	if(handle == -1){
 		printf("handle == -1\n");
 	}
+	/*
 	void* mem_area1 = memalloc(64,handle);
 	void* mem_area2 = memalloc(16,handle);
 	void* mem_area3 = memalloc(16,handle);
@@ -35,6 +36,10 @@ void test_list(){
 	memfree(mem_area4);
 	memfree(mem_area5);
 	mem_area1 = memalloc(64,handle);
+	*/
+	int* test_array = memalloc(sizeof(int),handle);
+	test_array[0] = 32;
+	printf("Test_array[0]: %d", test_array[0]);
 }
 
 
