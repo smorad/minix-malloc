@@ -261,6 +261,7 @@ int worst_area_free(int size){
 		else count++;
 	}
 	if(worst_index != ERROR){
+		printf("Found location for worst here: %d\n", (worst_index - worst));
 		return (worst_index - worst);
 	}
 	// There is not enough free space
