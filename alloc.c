@@ -336,7 +336,7 @@ int next_area_free(int size){
  * Returns the beginning indiex in the bitmap
  * For freelist
  */
-int next_area_free(int size){
+int random_area_free(int size){
 	int choose_random;
 	choose_random = rand()%4;
 	switch(choose_random){
