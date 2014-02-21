@@ -508,6 +508,7 @@ void* memalloc(long n_bytes, int handle){
 void memfree(void *region){
 	if(_free_buddy(region)==0)
 		return;
+	if(mp.page_size==0) return;
 	void *find_len;
 	unsigned mem_index, bitmap_index;
 	long free_size;
