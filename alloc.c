@@ -193,7 +193,7 @@ void* _buddy_alloc(long n_bytes, btree root, void* data, int handle){
 			printf("***FOUND***");
 			printf("beg: %lu end: %lu\n", root->seg_beg, root->seg_end);
 			printf("psize: %lu n_bytes: %lu ptr: %p mem_seg: %p\n\n\n ", root->size, n_bytes, root, root->seg_start);
-			root->taken = true;
+			root->taken = 1;
 			result_ptr = root->seg_start;
 		//	return root->seg_start;
 			return;
@@ -546,14 +546,15 @@ void count_holes_buddy(btree root, metrics *m){
 	if(root->rchild!=NULL)
 		count_holes_buddy(root->rchild, m);
 	if(root->lchild == NULL && root->rchild == NULL){
-		if(root->taken == 1){
+		printf("%d\n",root->taken);
+/*		if(root->taken == 1){
 			m->num_taken++;
 			m->size_taken += root->size;
 		}
 		else{
 			m->num_free++;
 			m->size_free += root->size;
-		}
+		}*/
 	}
 }
 
@@ -573,7 +574,7 @@ void count_holes(int handle, unsigned int mode){
 	metrics *m = malloc(sizeof(metrics));
 	*m = (metrics){0};
 	if(mode == (0x1)){
-//		free(NULL); //force coalesce blocks
+		free(NULL); //force coalesce blocks
 		count_holes_buddy(trees[handle], m);
 	}
 	printf("number of holes: %d\n  average size of holes: %lu\n number of in use blocks: %d\n average size of used byte: %lu\n", 
