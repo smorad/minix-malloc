@@ -152,7 +152,7 @@ int _free_buddy(void* region){
 	for(i=0; i<btree_count; i++){
 		found_node = NULL;
 		printf("attempting to find %p in tree %d\n", region, i);
-		
+		find_by_region(trees[btree_count], region);
 		if(found_node!=NULL){
 			found_node->taken = 0;
 			printf("\n\nreturn 0\n\n");
