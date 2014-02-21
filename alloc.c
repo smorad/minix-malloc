@@ -80,7 +80,7 @@ btree insert_node(long begin, long end, void* data, int handle){
 	new->taken = false;
 	new->should_free = 0;
 	new->seg_start = data + handle*sizeof(long) + begin;
-	printf("insert: beg: %lu end: %lu seg start: %p\n",begin, new->seg_start);
+	printf("insert: beg: %lu end: %lu seg start: %p\n",begin,end, new->seg_start);
 	new->seg_beg = begin;
 	new->seg_end = end;
 	assert(new!=NULL);
@@ -194,7 +194,7 @@ void* _buddy_alloc(long n_bytes, btree root, void* data, int handle){
 		if(root->taken==0 && (root->size == n_bytes)){		//if block is empty and correct size
 			printf("***FOUND***");
 			printf("beg: %lu end: %lu\n", root->seg_beg, root->seg_end);
-			printf("psize: %lu n_bytes: %lu ptr: %lu mem_seg: %p\n\n\n ", root->size, n_bytes, root, root->seg_start);
+			printf("psize: %lu n_bytes: %lu ptr: %p mem_seg: %p\n\n\n ", root->size, n_bytes, root, root->seg_start);
 			root->taken = true;
 			result_ptr = root->seg_start;
 			return root->seg_start;
@@ -532,7 +532,7 @@ void memfree(void *region){
 		free_size = 1;
 	}
 	/* Convert free_size to blocks */
-	printf("Bitmap index freed: %u		of size: %d\n", bitmap_index, free_size );
+	printf("Bitmap index freed: %u		of size: %li\n", bitmap_index, free_size );
 	mark_mem(bitmap_index, free_size, FREE);
 }
 
