@@ -110,6 +110,7 @@ btree find_by_region(btree root, void* region){	//will return node with segment,
 	if(root==NULL) return NULL;
 	/*mark node as freeable, coalesce block*/
 	if(root->lchild==NULL && root->rchild==NULL && root->taken==0) {//leaf
+		printf("marking node %p as should_tree\n", root);
 		root->should_free = 1;
 	}
 	if(root->lchild!=NULL && root->rchild!=NULL)
