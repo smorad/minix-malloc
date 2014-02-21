@@ -44,7 +44,10 @@ typedef struct binary_tree *btree;
 btree trees[1024];
 void* data[1024];	//our memory contents
 int block_size[1024];
+int memalloc_mode[1024];
+int memalloc_mode_counter = 0;
 int btree_count = 0;
+
 
 int power2(long x){
 	return (x & (x-1))==0;
@@ -455,6 +458,7 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 	if(flags==0x1){
 		//printf("0x1\n");
 		rv = _buddy_init(n_bytes, parm1);
+		memalloc_mode[memalloc_mode_counter] = BUDDY;
 		
 	}
 	else if(flags==(0x00 | 0x4)){
@@ -486,11 +490,12 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 		printf("Invalid bits set: %#010x\n", flags);
 		exit(1);
 	}
+	memalloc_mode_counter++;
 	return rv;
 }
 
 void* memalloc(long n_bytes, int handle){
-	switch(handle){
+	switch(memalloc_mode[handle]){
 		case BUDDY:
 			result_ptr = NULL;
 			_buddy_alloc(n_bytes, trees[handle], data[handle], handle);
