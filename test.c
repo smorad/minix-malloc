@@ -54,6 +54,7 @@ void test_buddy(){
 	memfree(h1);
 	printf("\nHANDLE 2: %p\n", h2);
 	memfree(h2);
+	printf("\nHANDLE 3: %p\n", h3);
 	memfree(h3);
 	//memfree(h4);
 }
