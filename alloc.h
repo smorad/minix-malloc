@@ -8,4 +8,6 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int *parm2);
 void *memalloc (int handle, long n_bytes);
 
 void memfree (void *region);
+
+void count_holes(int handle, unsigned int mode);
 #endif
