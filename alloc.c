@@ -129,17 +129,19 @@ btree find_by_region(btree root, void* region){	//will return node with segment,
 		root->should_free = 1;
 		return root;
 	}
-	else if(root->lchild!=NULL){
-		printf("moving left to %p\n", root->lchild);
-		find_by_region(root->lchild, region);
+	else{
+		if(root->lchild!=NULL){
+			printf("moving left to %p\n", root->lchild);
+			find_by_region(root->lchild, region);
+		}
+	
+		if(root->rchild!=NULL){
+			printf("moving right to %p\n", root->lchild);
+			find_by_region(root->rchild, region);
+		}
+		else
+			return NULL;
 	}
-
-	else if(root->rchild!=NULL){
-		printf("moving right to %p\n", root->lchild);
-		find_by_region(root->rchild, region);
-	}
-	else
-		return NULL;
 
 	/*// case 1: left free right taken
 	if( (root->lchild->should_free) && !(root->rchild->should_free) ){
