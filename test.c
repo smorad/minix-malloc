@@ -128,7 +128,7 @@ void buddy_holes(int page_size){
 
 int main(){
 	char* test = malloc(1024);
-	test_buddy();
+//	test_buddy();
 	buddy_holes(6);
 	//aux_test_buddy();
 	//speed_test_buddy();
