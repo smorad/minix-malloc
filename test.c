@@ -46,9 +46,14 @@ void test_list(){
 
 void test_buddy(){
 	int handle = meminit(4096, 0x1, 4, 0);
-	printf("ptr: %p\n", memalloc(128, handle));
-	printf("ptr: %p\n", memalloc(256, handle));
-	printf("ptr: %p\n", memalloc(128, handle));
+	int* h1 = memalloc(128, handle);
+	int* h2 = memalloc(256, handle);
+	int* h3 = memalloc(128, handle);
+	int* h4 = 0x0;
+	memfree(h1);
+	memfree(h2);
+	memfree(h3);
+	//memfree(h4);
 }
 
 void aux_test_buddy(){
@@ -62,12 +67,6 @@ void aux_test_buddy(){
 	t->f3 = 3;
 	t->f4 = 4;
 	int i;
-/*	for(i=0; i<128/(sizeof (int)); i++){
-		((int*)h1)[i] = i;
-		printf("%d==%d\n", i, ((int*)h1)[i]);
-	}*/
-
-		
 }
 
 
@@ -117,7 +116,7 @@ void speed_test_all(unsigned page_size){
 
 int main(){
 	char* test = malloc(1024);
-	//test_buddy();
+	test_buddy();
 	//aux_test_buddy();
 	//speed_test_buddy();
 	/*speed_test_list(0x4 | 0x0, 4); //first fit
@@ -125,12 +124,12 @@ int main(){
 	speed_test_list(0x4 | 0x10, 4); //best fit
 	speed_test_list(0x4 | 0x20, 4); //worst fit
 	speed_test_list(0x4 | 0x40, 4); //random fit*/
-	
+	/*
 	speed_test_all(4);
 	speed_test_all(8);
 	speed_test_all(16);
 	speed_test_all(32);
-	speed_test_all(64);
+	speed_test_all(64);*/
 
 //	test_list();
 	
