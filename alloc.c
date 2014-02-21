@@ -197,7 +197,8 @@ void* _buddy_alloc(long n_bytes, btree root, void* data, int handle){
 			printf("psize: %lu n_bytes: %lu ptr: %p mem_seg: %p\n\n\n ", root->size, n_bytes, root, root->seg_start);
 			root->taken = true;
 			result_ptr = root->seg_start;
-			return root->seg_start;
+		//	return root->seg_start;
+			return;
 		}
 		else{
 			//split block into children
