@@ -80,7 +80,7 @@ btree insert_node(long begin, long end, void* data, int handle){
 	new->taken = false;
 	new->should_free = 0;
 	new->seg_start = data + handle*sizeof(long) + begin;
-	printf("data: %p + handle: %lu * sizeof(long): %u + begin: %lu\n", data, handle, sizeof(long), begin);
+	printf("data: %p + handle: %lu * sizeof(long): %u + begin: %lu == **%p **\n", data, handle, sizeof(long), begin, new->seg_start);
 	printf("insert: beg: %lu end: %lu seg start: %p\n",begin,end, new->seg_start);
 	new->seg_beg = begin;
 	new->seg_end = end;
@@ -123,9 +123,9 @@ btree find_by_region(btree root, void* region){	//will return node with segment,
 	if(root->seg_start == region)
 		return root;
 	else if(root->lchild!=NULL)
-		return find_by_region(root->lchild, region);
+		find_by_region(root->lchild, region);
 	else if(root->rchild!=NULL)
-		return find_by_region(root->rchild, region);
+		find_by_region(root->rchild, region);
 	else
 		return NULL;
 
