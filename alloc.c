@@ -116,7 +116,8 @@ btree insert_node(long begin, long end, void* data, int handle){
 	new->size = end - begin;
 	if(new->size % block_size[handle] != 0){ //uhoh, need to add a block
 		long remainder = new->size/block_size[handle];
-		long increment = block_size[handle] - remainder;
+		long increment = abs(block_size[handle] - remainder);
+		printf("size: %lu, adding %lu\n", new->size + increment);
 		new->size += increment+1;
 		new->seg_end += increment+1;
 	}
@@ -602,17 +603,6 @@ void count_holes_buddy(btree root, metrics *m){
 	}
 }
 
-	//int num_free, num_taken, size_free, size_taken;
-	//for each page in handle
-		//if page->taken
-			//num_taken++
-			//size_taken += page_size
-		//else
-			//num_free++
-			//size_free += page_size
-		//size_taken = size_taken/num_pages
-		//size_free = size_free/num_pages
-		
 
 void count_holes(int handle, unsigned int mode){
 	metrics *m = malloc(sizeof(metrics));
@@ -621,10 +611,10 @@ void count_holes(int handle, unsigned int mode){
 		//_free_buddy(NULL, 1); //force coalesce blocks
 		count_holes_buddy(trees[handle], m);
 	}
-	if(m->num_free == 0) m->num_free = 1;
-	if(m->num_taken == 0) m->num_taken = 1;
 	print_memtree(trees[handle], 0);
-	printf("number of holes: %d\n  average size of holes: %lu\n number of in use blocks: %d\n average size of used byte: %lu\n", 
+	if(m->num_free == 0){printf("0 wasted bytes, incrementing to 1 to avoid division by 0 error during print\n"); m->num_free = 1;}
+	if(m->num_taken == 0) m->num_taken = 1;
+	printf("number of wasted bytes: %d\n  average size of holes: %lu\n number of bytes in use: %d\n average size of in use block: %lu\n", 
 			m->num_free, m->size_free/m->num_free, m->num_taken, m->size_taken/m->num_taken);
 
 }

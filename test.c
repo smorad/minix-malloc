@@ -121,8 +121,9 @@ void buddy_holes(int page_size){
 	int h = meminit(65536, 0x1, page_size, 0);
 	big *b;
 	int i;
-	for(i=0; i<8; i++)
-		b = memalloc(64/8, h);
+
+	for(i=0; i<64; i++)
+		b = memalloc(1024, h);
 //	free(b);	
 	count_holes(h, 0x1);
 }
