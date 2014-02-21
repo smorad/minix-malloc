@@ -68,7 +68,7 @@ void print_memtree(btree root, int start){
 		print_memtree(root->lchild, start);
 }
 
-btree insert_node(long begin, long end, void* data){
+btree insert_node(long begin, long end, void* data, int handle){
 	btree new = malloc(sizeof(struct binary_tree));
 	assert(new!=NULL);
 	new->size = end - begin;
@@ -79,7 +79,7 @@ btree insert_node(long begin, long end, void* data){
 	new->rchild = NULL;
 	new->taken = false;
 	new->should_free = 0;
-	new->seg_start = data + begin;
+	new->seg_start = data + handle*sizeof(long) + begin;
 	printf("insert: seg start: %p\n", new->seg_start);
 	new->seg_beg = begin;
 	new->seg_end = end;
@@ -94,7 +94,7 @@ int _buddy_init(long n_bytes, int parm1){
 		return ERROR;
 	}
 	assert(parm1>0);
-	trees[btree_count] = insert_node(0, n_bytes, NULL); //change me for pages
+	trees[btree_count] = insert_node(0, n_bytes, NULL, btree_count); //change me for pages
 	printf("ROOT NODE FOR HANDLE %d IS %p\n", btree_count, trees[btree_count]);
 	//trees[btree_count]->seg_start = (void*)malloc(n_bytes+10); //10 extra bytes just in case
 	data[btree_count] = malloc(n_bytes+10);
@@ -178,7 +178,7 @@ int _free_buddy(void* region){
 
 void* result_ptr = NULL; //in case we return null after finding value
 
-void* _buddy_alloc(long n_bytes, btree root, void* data){
+void* _buddy_alloc(long n_bytes, btree root, void* data, int handle){
 	//traverse in order
 	if(root==NULL) return NULL;
 	if(result_ptr != NULL) return; //found our result, don't want to overwrite
@@ -187,9 +187,9 @@ void* _buddy_alloc(long n_bytes, btree root, void* data){
 		 return result_ptr;
   	}		
 	if(root->lchild != NULL)
-		_buddy_alloc(n_bytes, root->lchild, data);
+		_buddy_alloc(n_bytes, root->lchild, data, handle);
 	if(root->rchild != NULL)
-		_buddy_alloc(n_bytes, root->rchild, data);
+		_buddy_alloc(n_bytes, root->rchild, data, handle);
 	if(root->lchild == NULL && root->rchild == NULL){ 	//if leaf
 		if(root->taken==0 && (root->size == n_bytes)){		//if block is empty and correct size
 			printf("***FOUND***");
@@ -201,11 +201,11 @@ void* _buddy_alloc(long n_bytes, btree root, void* data){
 		}
 		else{
 			//split block into children
-			root->lchild = insert_node(root->seg_beg, ((root->seg_beg + root->seg_end)/2), data);
-			root->rchild = insert_node(((root->seg_beg + root->seg_end)/2)+1, root->seg_end+1, data);
+			root->lchild = insert_node(root->seg_beg, ((root->seg_beg + root->seg_end)/2), data, handle);
+			root->rchild = insert_node(((root->seg_beg + root->seg_end)/2)+1, root->seg_end+1, data, handle);
 			//check again starting at current node
 			btree_debug(root);
-			_buddy_alloc(n_bytes, root, data);
+			_buddy_alloc(n_bytes, root, data, handle);
 		}
 	
 	}			
@@ -505,7 +505,7 @@ void* memalloc(long n_bytes, int handle){
 	switch(handle){
 		case BUDDY:
 			result_ptr = NULL;
-			return _buddy_alloc(n_bytes, trees[handle], data[handle]);
+			return _buddy_alloc(n_bytes, trees[handle], data[handle], handle);
 		case ERROR:
 			printf("Memory not initialized correctly\n");
 			return NULL;
