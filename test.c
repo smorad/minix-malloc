@@ -49,6 +49,7 @@ void test_buddy(){
 	int* h1 = memalloc(128, handle);
 	printf("\nHANDLE 1: %p\n", h1);
 	int* h2 = memalloc(256, handle);
+	printf("\nHANDLE 2: %p\n", h2);
 	int* h3 = memalloc(128, handle);
 	int* h4 = 0x0;
 	memfree(h1);
