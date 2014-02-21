@@ -59,16 +59,53 @@ long pow2(int parm1){
 	return rv;
 }
 
+
+
+
+
+
+/*print function stolen from Narue on daniweb.com*/
+
+void padding ( char ch, int n )
+{
+	  int i;
+
+	    for ( i = 0; i < n; i++ )
+			    putchar ( ch );
+}
+
+void structure ( btree root, int level )
+{
+	  int i;
+
+	    if ( root == NULL ) {
+			    padding ( '\t', level );
+				    puts ( "~" );
+					  }
+		  else {
+			      structure ( root->rchild, level + 1 );
+				      padding ( '\t', level );
+					      printf ( "%d\n", root->taken );
+						      structure ( root->lchild, level + 1 );
+							    }
+}
+
+
+/*end print function*/
+
+
+
 void print_memtree(btree root, int start){
-	start++;
-	if(root->rchild!=NULL)
-		print_memtree(root->rchild, start);
+	structure(root, 0);
+	/*start++;
+	if(root->lchild!=NULL)
+		print_memtree(root->lchild, start);
 	int i;
 	for(i=0; i<=start; i++)
-		printf("     ");
-	printf("%lu\n", root->size);
+		printf("   ");
+	printf("%d %d\n", root->size, root->taken);
 	if(root->lchild !=NULL)
-		print_memtree(root->lchild, start);
+		print_memtree(root->lchild, start);*/
 }
 
 btree insert_node(long begin, long end, void* data, int handle){
@@ -138,7 +175,7 @@ btree find_by_region(btree root, void* region, int mode){	//will return node wit
 	/*search block*/
 
 	//printf("root->seg_start: %p region: %p\n", root->seg_start, region);
-	if(root->taken && root->seg_start == region && mode==0){
+	if(root->taken && root->seg_start == region && mode!=1){
 		printf("FOUND FREE\n");
 		root->taken = 0;
 		root->should_free = 1;
@@ -152,7 +189,7 @@ btree find_by_region(btree root, void* region, int mode){	//will return node wit
 		}
 	
 		if(root->rchild!=NULL){
-			printf("moving right to %p\n", root->lchild, mode);
+			printf("moving right to %p\n", root->lchild);
 			find_by_region(root->rchild, region, mode);
 		}
 		else
@@ -193,7 +230,7 @@ void* _buddy_alloc(long n_bytes, btree root, void* data, int handle){
 		_buddy_alloc(n_bytes, root->rchild, data, handle);
 	if(root->lchild == NULL && root->rchild == NULL){ 	//if leaf
 		if(root->taken==0 && (root->size == n_bytes)){		//if block is empty and correct size
-			//printf("***FOUND***");
+			printf("***FOUND***");
 			//printf("beg: %lu end: %lu\n", root->seg_beg, root->seg_end);
 			//printf("psize: %lu n_bytes: %lu ptr: %p mem_seg: %p\n\n\n ", root->size, n_bytes, root, root->seg_start);
 			root->taken = 1;
@@ -203,6 +240,8 @@ void* _buddy_alloc(long n_bytes, btree root, void* data, int handle){
 			return;
 		}
 		else{
+			//printf("SIZE %lu\n", root->size/2); 
+			if(root->size/2 < n_bytes) return;
 			//split block into children
 			root->lchild = insert_node(root->seg_beg, ((root->seg_beg + root->seg_end)/2), data, handle);
 			root->rchild = insert_node(((root->seg_beg + root->seg_end)/2)+1, root->seg_end+1, data, handle);
@@ -545,14 +584,14 @@ typedef struct {
 
 void count_holes_buddy(btree root, metrics *m){
 	if(root == NULL) return;
-	find_by_region(root, NULL, 1);
+	//find_by_region(root, NULL, 1);
 	if(root->lchild!=NULL)
 		count_holes_buddy(root->lchild, m);
 	if(root->rchild!=NULL)
 		count_holes_buddy(root->rchild, m);
 	if(root->lchild == NULL && root->rchild == NULL){
 		printf("ptr: %p\n", &root->taken);
-		if(root->taken == 1 || root->should_free == 1){
+		if(root->taken == 1){
 			m->num_taken++;
 			m->size_taken += root->size;
 		}
@@ -579,9 +618,12 @@ void count_holes(int handle, unsigned int mode){
 	metrics *m = malloc(sizeof(metrics));
 	*m = (metrics){0};
 	if(mode == (0x1)){
-		free(NULL); //force coalesce blocks
+		//_free_buddy(NULL, 1); //force coalesce blocks
 		count_holes_buddy(trees[handle], m);
 	}
+	if(m->num_free == 0) m->num_free = 1;
+	if(m->num_taken == 0) m->num_taken = 1;
+	print_memtree(trees[handle], 0);
 	printf("number of holes: %d\n  average size of holes: %lu\n number of in use blocks: %d\n average size of used byte: %lu\n", 
 			m->num_free, m->size_free/m->num_free, m->num_taken, m->size_taken/m->num_taken);
 
