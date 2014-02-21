@@ -139,7 +139,7 @@ btree find_by_region(btree root, void* region){	//will return node with segment,
 }
 
 
-void _free_buddy(void* region){
+int _free_buddy(void* region){
 	int i;
 	btree found_node = NULL;
 	for(i=0; i<btree_count; i++){
@@ -147,7 +147,9 @@ void _free_buddy(void* region){
 	}
 	if(found_node!=NULL){
 		found_node->taken = 0;
+		return 0;
 	}
+	return ERROR;
 }
 
 btree result_ptr = NULL; //in case we return null after finding value
@@ -497,6 +499,8 @@ void* memalloc(long n_bytes, int handle){
 }
 
 void memfree(void *region){
+	if(_free_buddy(region)==0)
+		return;
 	void *find_len;
 	unsigned mem_index, bitmap_index;
 	long free_size;
