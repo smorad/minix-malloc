@@ -106,7 +106,26 @@ int _buddy_init(long n_bytes, int parm1){
 
 btree find_by_region(btree root, void* region){	//will return node with segment, also will coalesce empty blocks
 	if(root==NULL) return NULL;
-	// case 1: left free right taken
+	/*mark node as freeable, coalesce block*/
+	if(root->lchild==NULL && root->rchild==NULL && root->taken==0) {//leaf
+		root->should_free = 1;
+	}
+	if(root->lchild->should_free && root->rchild->should_free){
+		free(root->lchild);
+		free(root->rchild);
+		root->lchild = root->rchild = NULL;
+	}
+	/*search block*/
+	if(root->seg_start == region)
+		return root;
+	else if(root->lchild!=NULL)
+		return find_by_region(root->lchild, region);
+	else if(root->rchild!=NULL)
+		return find_by_region(root->rchild, region);
+	else
+		return NULL;
+
+	/*// case 1: left free right taken
 	if( (root->lchild->should_free) && !(root->rchild->should_free) ){
 		root->lchild->taken = 0;
 		root->lchild->should_free = 0;
@@ -136,7 +155,7 @@ btree find_by_region(btree root, void* region){	//will return node with segment,
 	if(root->lchild==NULL && root->rchild==NULL && root->taken == 0){
 		root->should_free = 1;
 		return ;
-	}
+	}*/
 }
 
 
