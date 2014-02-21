@@ -47,6 +47,7 @@ void test_list(){
 void test_buddy(){
 	int handle = meminit(4096, 0x1, 4, 0);
 	int* h1 = memalloc(128, handle);
+	printf("\nHANDLE 1: %p\n", h1);
 	int* h2 = memalloc(256, handle);
 	int* h3 = memalloc(128, handle);
 	int* h4 = 0x0;
