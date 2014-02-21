@@ -80,8 +80,8 @@ btree insert_node(long begin, long end, void* data, int handle){
 	if(new->size % block_size[handle] != 0){ //uhoh, need to add a block
 		long remainder = new->size/block_size[handle];
 		long increment = block_size[handle] - remainder;
-		new->size += increment;
-		new->seg_end += increment;
+		new->size += increment+1;
+		new->seg_end += increment+1;
 	}
 
 	//if(begin==0)
