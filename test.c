@@ -45,7 +45,7 @@ void test_list(){
 
 
 void test_buddy(){
-	int handle = meminit(4096, 0x1, 4, 0);
+	int handle = meminit(4096, 0x1, 5, 0);
 	int* h1 = memalloc(128, handle);
 	int* h2 = memalloc(256, handle);
 	int* h3 = memalloc(128, handle);

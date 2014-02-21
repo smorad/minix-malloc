@@ -42,18 +42,17 @@ typedef struct binary_tree *btree;
 
 btree trees[1024];
 void* data[1024];	//our memory contents
-
+int block_size[1024];
 int btree_count = 0;
 
 int power2(long x){
 	return (x & (x-1))==0;
 }
-
-void btree_debug(btree parent){
-	//printf("parent size: %lu beg: %lu end: %lu\n", parent->size, parent->seg_beg, parent->seg_end);
-	//printf("lchild_ptr: %p rchild_ptr: %p\n", 
-	//	parent->lchild->seg_start, parent->rchild->seg_start);
-
+long pow2(int parm1){
+	int i;
+	int rv = 1;
+	for(i = 0; i < parm1; i++) rv *= 2;
+	return rv;
 }
 
 void print_memtree(btree root, int start){
@@ -71,7 +70,16 @@ void print_memtree(btree root, int start){
 btree insert_node(long begin, long end, void* data, int handle){
 	btree new = malloc(sizeof(struct binary_tree));
 	assert(new!=NULL);
+	new->seg_beg = begin;
+	new->seg_end = end;
 	new->size = end - begin;
+	if(new->size % block_size[handle] != 0){ //uhoh, need to add a block
+		long remainder = new->size/block_size[handle];
+		long increment = block_size[handle] - remainder;
+		new->size += increment;
+		new->seg_end += increment;
+	}
+
 	//if(begin==0)
 	//	new->size++;
 	assert(new->size!=0);
@@ -82,8 +90,6 @@ btree insert_node(long begin, long end, void* data, int handle){
 	new->seg_start = data + handle*sizeof(long) + begin;
 //	printf("data: %p + handle: %d * sizeof(long): %lu + begin: %lu == **%p **\n", data, handle, sizeof(long), begin, new->seg_start);
 	printf("insert: beg: %lu end: %lu seg start: %p\n",begin,end, new->seg_start);
-	new->seg_beg = begin;
-	new->seg_end = end;
 	assert(new!=NULL);
 	//printf("inserting node of size: %lu, beg: %lu end %lu\n", new->size, new->seg_beg, new->seg_end);
 	return new;
@@ -95,6 +101,7 @@ int _buddy_init(long n_bytes, int parm1){
 		return ERROR;
 	}
 	assert(parm1>0);
+	block_size[btree_count] = pow2(parm1); //block_Size_in_bytes 
 	trees[btree_count] = insert_node(0, n_bytes, NULL, btree_count); //change me for pages
 	printf("ROOT NODE FOR HANDLE %d IS %p\n", btree_count, trees[btree_count]);
 	//trees[btree_count]->seg_start = (void*)malloc(n_bytes+10); //10 extra bytes just in case
@@ -191,7 +198,6 @@ void* _buddy_alloc(long n_bytes, btree root, void* data, int handle){
 			root->lchild = insert_node(root->seg_beg, ((root->seg_beg + root->seg_end)/2), data, handle);
 			root->rchild = insert_node(((root->seg_beg + root->seg_end)/2)+1, root->seg_end+1, data, handle);
 			//check again starting at current node
-			btree_debug(root);
 			_buddy_alloc(n_bytes, root, data, handle);
 		}
 	
@@ -375,12 +381,6 @@ int random_area_free(int size){
 
 
 
-long pow2(int parm1){
-	int i;
-	int rv = 1;
-	for(i = 0; i < parm1; i++) rv *= 2;
-	return rv;
-}
 
 /*
  * First fit memalloc
