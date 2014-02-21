@@ -110,7 +110,7 @@ btree find_by_region(btree root, void* region){	//will return node with segment,
 	if(root==NULL) return NULL;
 	/*mark node as freeable, coalesce block*/
 	if(root->lchild==NULL && root->rchild==NULL && root->taken==0) {//leaf
-		printf("marking node %p as should_tree\n", root);
+		printf("marking node %p as should_free\n", root);
 		root->should_free = 1;
 	}
 	if(root->lchild!=NULL && root->rchild!=NULL)
@@ -119,6 +119,7 @@ btree find_by_region(btree root, void* region){	//will return node with segment,
 			free(root->lchild);
 			free(root->rchild);
 			root->lchild = root->rchild = NULL;
+			root->should_free = 1; //do i want to do this?
 		}
 	/*search block*/
 
@@ -128,10 +129,15 @@ btree find_by_region(btree root, void* region){	//will return node with segment,
 		root->should_free = 1;
 		return root;
 	}
-	else if(root->lchild!=NULL)
+	else if(root->lchild!=NULL){
+		printf("moving left to %p\n", root->lchild);
 		find_by_region(root->lchild, region);
-	else if(root->rchild!=NULL)
+	}
+
+	else if(root->rchild!=NULL){
+		printf("moving right to %p\n", root->lchild);
 		find_by_region(root->rchild, region);
+	}
 	else
 		return NULL;
 
