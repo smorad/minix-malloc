@@ -143,37 +143,6 @@ btree find_by_region(btree root, void* region){	//will return node with segment,
 			return NULL;
 	}
 
-	/*// case 1: left free right taken
-	if( (root->lchild->should_free) && !(root->rchild->should_free) ){
-		root->lchild->taken = 0;
-		root->lchild->should_free = 0;
-	}
-	// case 2: right free left taken
-	else if( !(root->lchild->should_free) && (root->rchild->should_free) ){
-		root->rchild->taken = 0;
-		root->rchild->should_free = 0;
-	}
-	// case 3: right free left left
-	else if( (root->lchild->should_free) && (root->rchild->should_free) ){//coalesce
-		free(root->rchild);
-		free(root->lchild);
-		root->lchild = NULL;
-		root->rchild = NULL;
-	}	
-	if(root->lchild!=NULL)
-		find_by_region(root->lchild, region);
-
-	if(root->rchild!=NULL)
-		find_by_region(root->rchild, region);
-	
-	//if leaf
-	if(root->seg_start == region)
-		return root;
-		
-	if(root->lchild==NULL && root->rchild==NULL && root->taken == 0){
-		root->should_free = 1;
-		return ;
-	}*/
 }
 
 
