@@ -80,6 +80,7 @@ btree insert_node(long begin, long end, void* data, int handle){
 	new->taken = false;
 	new->should_free = 0;
 	new->seg_start = data + handle*sizeof(long) + begin;
+	printf("data: %p + handle: %lu * sizeof(long): %u + begin: %lu\n", data, handle, sizeof(long), begin);
 	printf("insert: beg: %lu end: %lu seg start: %p\n",begin,end, new->seg_start);
 	new->seg_beg = begin;
 	new->seg_end = end;
