@@ -137,6 +137,7 @@ btree find_by_region(btree root, void* region){	//will return node with segment,
 	//printf("root->seg_start: %p region: %p\n", root->seg_start, region);
 	if(root->taken && root->seg_start == region){
 		printf("FOUND FREE\n");
+		root->taken = 0;
 		root->should_free = 1;
 		found_node = root;
 		return root;
@@ -539,12 +540,13 @@ typedef struct {
 
 
 void count_holes_buddy(btree root, metrics *m){
+	if(root == NULL) return;
 	if(root->lchild!=NULL)
 		count_holes_buddy(root->lchild, m);
 	if(root->rchild!=NULL)
 		count_holes_buddy(root->rchild, m);
-	if(root->lchild == NULL && root->rchild == NULL){}
-		if(root->taken){
+	if(root->lchild == NULL && root->rchild == NULL){
+		if(root->taken == 1){
 			m->num_taken++;
 			m->size_taken += root->size;
 		}
@@ -552,6 +554,7 @@ void count_holes_buddy(btree root, metrics *m){
 			m->num_free++;
 			m->size_free += root->size;
 		}
+	}
 }
 
 	//int num_free, num_taken, size_free, size_taken;
@@ -568,10 +571,12 @@ void count_holes_buddy(btree root, metrics *m){
 
 void count_holes(int handle, unsigned int mode){
 	metrics *m = malloc(sizeof(metrics));
-	memset(&m, 0, sizeof(metrics));
-	if(mode == (0x1))
+	*m = (metrics){0};
+	if(mode == (0x1)){
+//		free(NULL); //force coalesce blocks
 		count_holes_buddy(trees[handle], m);
-	printf("number of holes: %d  average size of holes: %lu number of in use blocks: %d average size of used byte: %lu", 
+	}
+	printf("number of holes: %d\n  average size of holes: %lu\n number of in use blocks: %d\n average size of used byte: %lu\n", 
 			m->num_free, m->size_free/m->num_free, m->num_taken, m->size_taken/m->num_taken);
 
 }

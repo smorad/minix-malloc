@@ -121,15 +121,16 @@ void buddy_holes(int page_size){
 	int h = meminit(65536, 0x1, page_size, 0);
 	big *b;
 	int i;
-	for(i=0; i<64; i++)
-		b = memalloc(64, h);	
+	for(i=0; i<8; i++)
+		b = memalloc(64, h);
+	//free(b);	
 	count_holes(h, 0x1);
 }
 
 int main(){
 	char* test = malloc(1024);
 //	test_buddy();
-	buddy_holes(6);
+	buddy_holes(5);
 	//aux_test_buddy();
 	//speed_test_buddy();
 	/*speed_test_list(0x4 | 0x0, 4); //first fit
