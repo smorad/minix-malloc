@@ -110,11 +110,12 @@ btree find_by_region(btree root, void* region){	//will return node with segment,
 	if(root->lchild==NULL && root->rchild==NULL && root->taken==0) {//leaf
 		root->should_free = 1;
 	}
-	if(root->lchild->should_free && root->rchild->should_free){
-		free(root->lchild);
-		free(root->rchild);
-		root->lchild = root->rchild = NULL;
-	}
+	if(root->lchild!=NULL && root->rchild!=NULL)
+		if(root->lchild->should_free && root->rchild->should_free){
+			free(root->lchild);
+			free(root->rchild);
+			root->lchild = root->rchild = NULL;
+		}
 	/*search block*/
 	if(root->seg_start == region)
 		return root;
