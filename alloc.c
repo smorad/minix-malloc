@@ -80,6 +80,7 @@ btree insert_node(long begin, long end, void* data){
 	new->taken = false;
 	new->should_free = 0;
 	new->seg_start = data + begin;
+	printf("insert: seg start: %p\n", new->seg_start);
 	new->seg_beg = begin;
 	new->seg_end = end;
 	assert(new!=NULL);
@@ -199,13 +200,7 @@ void* _buddy_alloc(long n_bytes, btree root, void* data){
 			return root->seg_start;
 		}
 		else{
-			//printf("creating child\n");
 			//split block into children
-			//these conflict, fix later
-/*				if(((root->seg_end/2)-root->seg_beg) < n_bytes){ 
-				//printf("child would be too small\n");
-				return result_ptr;	//just in case so we don't get stuck in inf loop
-			}*/
 			root->lchild = insert_node(root->seg_beg, ((root->seg_beg + root->seg_end)/2), data);
 			root->rchild = insert_node(((root->seg_beg + root->seg_end)/2)+1, root->seg_end+1, data);
 			//check again starting at current node
