@@ -176,7 +176,7 @@ int _free_buddy(void* region){
 	return ERROR;
 }
 
-btree result_ptr = NULL; //in case we return null after finding value
+void* result_ptr = NULL; //in case we return null after finding value
 
 void* _buddy_alloc(long n_bytes, btree root, void* data){
 	//traverse in order
