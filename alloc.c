@@ -507,7 +507,8 @@ void* memalloc(long n_bytes, int handle){
 	switch(handle){
 		case BUDDY:
 			result_ptr = NULL;
-			return _buddy_alloc(n_bytes, trees[handle], data[handle], handle);
+			_buddy_alloc(n_bytes, trees[handle], data[handle], handle);
+			return result_ptr;
 		case ERROR:
 			printf("Memory not initialized correctly\n");
 			return NULL;
