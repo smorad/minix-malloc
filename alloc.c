@@ -123,6 +123,7 @@ btree find_by_region(btree root, void* region){	//will return node with segment,
 	//printf("root->seg_start: %p region: %p\n", root->seg_start, region);
 	if(root->taken && root->seg_start == region){
 		printf("FOUND FREE\n");
+		root->should_free = 1;
 		return root;
 	}
 	else if(root->lchild!=NULL)
