@@ -155,8 +155,10 @@ int _free_buddy(void* region){
 	}
 	if(found_node!=NULL){
 		found_node->taken = 0;
+		printf("\n\nreturn 0\n\n");
 		return 0;
 	}
+	printf("\n\nreturn 1\n\n");
 	return ERROR;
 }
 
