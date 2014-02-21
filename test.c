@@ -123,7 +123,7 @@ void buddy_holes(int page_size){
 	int i;
 	for(i=0; i<8; i++)
 		b = memalloc(64, h);
-	free(b);	
+//	free(b);	
 	count_holes(h, 0x1);
 }
 
