@@ -435,6 +435,7 @@ int random_area_free(int size){
 		
 		if(i == mp.bitmap_size - 1){
 			i = 0;
+			count = 0;
 		}
 		full_circle++;
 	}
