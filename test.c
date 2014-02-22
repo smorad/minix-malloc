@@ -281,23 +281,23 @@ void worst_fit(){
 	void* s[32];
 	void* tmp[128];
 	int i;
-	for(i=0; i<32; i++){
+	for(i=0; i<16; i++){
 		b[i] = memalloc(65535, handle);
 		s[i] = memalloc(16384, handle);
 		
 	}
-	for(i=0; i<32; i++){
-		memfree(b[32]);
+	for(i=0; i<16; i++){
+		memfree(b[i]);
 	}
 	
-	for(i=0; i<32; i++){
+	for(i=0; i<16; i++){
 		s[i] = memalloc(16384, handle);
 		
 	}
-	for(i=0; i<128; i++)
+	for(i=0; i<64; i++)
 		 tmp[i] = memalloc(4, handle);
 	count_holes(handle);
-	for(i=0; i<32; i++){
+	for(i=0; i<16; i++){
 		memfree(b[i]);
 		memfree(s[i]);
 		
