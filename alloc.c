@@ -145,11 +145,11 @@ int _buddy_init(long n_bytes, int parm1){
 	assert(parm1>0);
 	block_size[meminit_count] = pow2(parm1); //block_Size_in_bytes 
 	trees[meminit_count] = insert_node(0, n_bytes, NULL, meminit_count); //change me for pages
-	printf("ROOT NODE FOR HANDLE %d IS %p\n", meminit_count, trees[meminit_count]);
+	//printf("ROOT NODE FOR HANDLE %d IS %p\n", meminit_count, trees[meminit_count]);
 	//trees[meminit_count]->seg_start = (void*)malloc(n_bytes+10); //10 extra bytes just in case
 	data[meminit_count] = malloc(n_bytes+10);
 	if (trees[meminit_count] == NULL){
-		printf("beg = NULL\n");
+		//printf("beg = NULL\n");
 		return ERROR;
 	}
 	return meminit_count++;
@@ -162,12 +162,12 @@ btree find_by_region(btree root, void* region, int mode){	//will return node wit
 	if(root==NULL) return NULL;
 	/*mark node as freeable, coalesce block*/
 	if(root->lchild==NULL && root->rchild==NULL && root->taken==0) {//leaf
-		printf("marking node %p as should_free\n", root);
+		//printf("marking node %p as should_free\n", root);
 		root->should_free = 1;
 	}
 	if(root->lchild!=NULL && root->rchild!=NULL)
 		if(root->lchild->should_free && root->rchild->should_free){
-			printf("freeing node: %p segment: %p\n", root, root->seg_start);
+			//printf("freeing node: %p segment: %p\n", root, root->seg_start);
 			free(root->lchild);
 			free(root->rchild);
 			root->lchild = root->rchild = NULL;
@@ -177,7 +177,7 @@ btree find_by_region(btree root, void* region, int mode){	//will return node wit
 
 	//printf("root->seg_start: %p region: %p\n", root->seg_start, region);
 	if(root->taken && root->seg_start == region && mode!=1){
-		printf("FOUND FREE\n");
+		//printf("FOUND FREE\n");
 		root->taken = 0;
 		root->should_free = 1;
 		found_node = root;
@@ -185,12 +185,12 @@ btree find_by_region(btree root, void* region, int mode){	//will return node wit
 	}
 	else{
 		if(root->lchild!=NULL){
-			printf("moving left to %p\n", root->lchild);
+			//printf("moving left to %p\n", root->lchild);
 			find_by_region(root->lchild, region, mode);
 		}
 	
 		if(root->rchild!=NULL){
-			printf("moving right to %p\n", root->lchild);
+			//printf("moving right to %p\n", root->lchild);
 			find_by_region(root->rchild, region, mode);
 		}
 		else
