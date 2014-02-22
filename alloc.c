@@ -624,53 +624,23 @@ void count_holes_buddy(btree root, metrics *m){
  */
 
 void print_min(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
-	/*
- 	unsigned int i;
- 	unsigned int min = INT_MAX;
- 	for(i = 0; i < m->num_free; i++){
- 		if(free_holes[i] < min) min = free_holes[i];
- 	}
- 	printf("Minimum Size Block Free:	%lu\n", min);
- 	
- 	min = INT_MAX;
- 	for(i = 0; i < m->num_taken; i++){
- 		if(taken_holes[i] < min) min = taken_holes[i];
- 	}
- 	printf("Minimum Size Block Taken:	%lu\n", min);
- 	*/
  	printf("Minimum Size Block Free:	%lu\n", free_holes[0]);
  	printf("Minimum Size Block Taken:	%lu\n", taken_holes[0]);
  }
  
 void print_max(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
-	/*
- 	unsigned int i;
- 	unsigned int max = 0;
- 	for(i = 0; i < m->num_free; i++){
- 		if(free_holes[i] > max) max = free_holes[i];
- 	}
- 	printf("Maximum Size Block Free:	%lu\n", max);
- 	
- 	max = 0;
- 	for(i = 0; i < m->num_taken; i++){
- 		if(taken_holes[i] > max) max = taken_holes[i];
- 	}
- 	printf("Maximum Size Block Taken:	%lu\n", max);
- 	*/
  	printf("Maximum Size Block Free:	%lu\n", free_holes[m->num_free - 1]);
  	printf("Maximum Size Block Taken:	%lu\n", taken_holes[m->num_taken - 1]);
  }
  
 
 int comp(unsigned int* a, unsigned int* b){
-	printf("%u %u\n", *a, *b);
 	if(*a<*b) return -1;
 	else if(*a>*b) return 1;
 	else return 0;
 }
  
 void print_median(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
-	//qsort(free_holes, m->num_free, sizeof(unsigned int), (int(*)(const void*, const void*))comp);
 	printf("Median Size Block Free:		%lu\n", free_holes[m->num_free/2]);
     	printf("Median Size Block Taken:	%lu\n", taken_holes[m->num_free/2]);
 }
