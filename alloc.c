@@ -654,25 +654,33 @@ void print_max(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
  }
  
 
+int comp(const void* a, const void* b){
+	if(*a<*b) return -1;
+	else if(*a>*b) return 1;
+	else return ;
+}
  
  void print_median(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
 	printf("Median Size Block Free:\t%lu\n", free_holes[m->num_free/2]);
-    printf("Median Size Block Taken:\t%lu\n", taken_holes[m->num_free/2]);
+    	printf("Median Size Block Taken:\t%lu\n", taken_holes[m->num_free/2]);
+    	qsort(free_holes, m->free_holes, sizeof(unsigned int), comp)
 }
 
-void print_median(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
-unsigned long long mean = 0;
-unsigned long count;
-for(count=0; count<m->num_free;count++)
-	mean+=free_holes[i];
-mean = mean/m->num_free;
-printf("Mean Size Block Free:\t%llu\n, mean);
-mean = 0;
-for(count=0; count<m->num_taken;count++)
-	mean+=taken_holes[i];
-mean = mean/m->num_taken;
-printf("Mean Size Block Free:\t%llu\n, mean);
-
+void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
+	unsigned long long mean = 0;
+	unsigned long count;
+	for(count=0; count<m->num_free;count++){
+		mean += free_holes[count];	
+	}
+		
+	mean = mean/m->num_free;
+	printf("Mean Size Block Free:	%llu\n, mean);
+	mean = 0;
+	for(count=0; count < m->num_taken; count++){
+		mean += taken_holes[count];
+	}
+	mean = mean/m->num_taken;
+	printf("Mean Size Block Free:	%llu\n, mean);
 }
 
 /*
