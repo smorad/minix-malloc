@@ -664,7 +664,7 @@ int comp(unsigned int* a, unsigned int* b){
  void print_median(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
 	printf("Median Size Block Free:\t%lu\n", free_holes[m->num_free/2]);
     	printf("Median Size Block Taken:\t%lu\n", taken_holes[m->num_free/2]);
-    	qsort(free_holes, m->free_holes, sizeof(unsigned int), (int(*)(const void*, const void*))comp);
+    	qsort(free_holes, m->num_free, sizeof(unsigned int), (int(*)(const void*, const void*))comp);
 }
 
 void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
