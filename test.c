@@ -41,6 +41,7 @@ void test_list(){
 	test_array[0] = 32;
 	printf("Test_array[0]: %d\n", test_array[0]);
 	memfree(test_array);
+	count_holes(handle);
 }
 
 
@@ -125,12 +126,13 @@ void buddy_holes(int page_size){
 	for(i=0; i<64; i++)
 		b = memalloc(1024, h);
 //	free(b);	
-	count_holes(h, 0x1);
+	count_holes(h);
 }
 
 int main(){
 //	test_buddy();
 	buddy_holes(5);
+	test_list();
 	//aux_test_buddy();
 	//speed_test_buddy();
 	/*speed_test_list(0x4 | 0x0, 4); //first fit
