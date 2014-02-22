@@ -131,7 +131,7 @@ void buddy_holes(int page_size){
 
 int main(){
 //	test_buddy();
-	buddy_holes(5);
+	//buddy_holes(5);
 	test_list();
 	//aux_test_buddy();
 	//speed_test_buddy();
