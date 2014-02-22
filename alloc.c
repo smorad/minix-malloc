@@ -616,6 +616,7 @@ void count_holes_buddy(btree root, metrics *m){
  * Counts the holes in a list format
  */
 void count_holes_list(metrics *m){
+	printf("\n\n----------Free and Taken Block Sizes------------\n\n");
 	unsigned long curr_free_block = 0;
 	unsigned long curr_taken_block = 0;
 	unsigned i;
