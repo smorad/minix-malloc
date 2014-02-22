@@ -670,7 +670,7 @@ int comp(unsigned int* a, unsigned int* b){
 void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
 	unsigned long long mean = 0;
 	unsigned long count;
-	for(count=0; count<m->num_free;count++){
+	for(count=0; count < m->num_free; count++){
 		mean += free_holes[count];	
 	}
 		
@@ -719,6 +719,7 @@ void count_holes_list(metrics *m){
 	
 	// Conduct experiments with our arrays
 	printf("\n\n---------------------DATA----------------------\n\n");
+	printf("\nNUM FREE:	%d\n", m->num_free);
 	//for(i = 0; i < m->num_free; i++) printf("%d\n",free_holes[i]);
 	//printf("\n------------------------------------------------\n\n");
 	//for(i = 0; i < m->num_free; i++) printf("%d\n",free_holes[i]);
