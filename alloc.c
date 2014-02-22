@@ -625,8 +625,8 @@ void count_holes_buddy(btree root, metrics *m){
  
  int comp(const void *a, const void *b) {
  	
- 	long *ai = *((long *)a);
- 	long *bi = *((long *)b);
+ 	const long *ai = ((const long *)a);
+ 	const long *bi = ((const long *)b);
  	
  	printf("%lu %lu\n", ai, bi);
  	return 0;
