@@ -624,7 +624,11 @@ void count_holes_buddy(btree root, metrics *m){
  */
  
  int comp(const void *a, const void *b) {
- 	return ( *(int*)a - *(int*)b );
+ 	const unsigned long *ia = (const unsigned long *)a;
+ 	const unsigned long *ib = (const unsigned long *)b;
+ 	if(ia > ib) return 1;
+ 	else if(ia < ib) return -1;
+ 	else return 0;
  }
 
  print_min(unsigned int *free_holes, unsigned int *taken_holes){
