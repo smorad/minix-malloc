@@ -640,6 +640,7 @@ void count_holes_list(metrics *m){
 			curr_free_block++;	
 		}
 	}
+	printf("\n\n------------------------------------------------\n\n");
 	//print_bitmap();
 	return;
 }
@@ -656,7 +657,7 @@ void count_holes(int handle){
 			count_holes_list(m);
 			break;
 	}
-	print_memtree(trees[handle], 0);
+	//print_memtree(trees[handle], 0);
 	if(m->num_free == 0){printf("0 wasted bytes, incrementing to 1 to avoid division by 0 error during print\n"); m->num_free = 1;}
 	if(m->num_taken == 0) m->num_taken = 1;
 	printf("  number of wasted bytes: %d\n  average size of holes: %lu\n  number of bytes in use: %d\n  average size of in use block: %lu\n", 
