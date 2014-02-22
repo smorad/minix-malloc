@@ -1,10 +1,16 @@
+--General Overview--
+
 Each call to memalloc, meminit, and memfree will call a function which contains the meat of each of these tasks. The actualy meminit, memalloc, and memfree functions will mostly just select which of the corresponding functions to call depending on the mode. We will have an array of handles and an array of modes which will be in parity (ex. handles[17] will be mode mode[17]). This is because memalloc() is not passed mode as an argument.
 
+--Buddy Overview--
 
 The buddy allocator is going to use a binary tree structure to store pointers to free blocks. Each tree will only have one contigous memory segment. Each node in the tree will point to different offsets within the memory segment, partitioning the tree.
 
 Freeing and coalescing the nodes will take place in the same function. As you go traverse the tree to find your freeable node, the function will check at each node if the node needs to be coalesced. If so, it will be marked as coalescable, and will be freed upon the next call to free.
 
+The fourth variable in meminit, parm2, is not used at all in this project. It was shown in the specification document, but it had no use to us.
+
+--Buddy Pseudocode and Functional Overview--
 Buddy Allocator
 
   int meminit(long n_bytes, unsigned flags, int parm1, int *parm2)
@@ -32,12 +38,13 @@ Buddy Allocator
       memfree(2^log2(bytes)+1)    //free next power of 2 up
       
       
+--List Overview--
 
 List based handlers will rely on a linear bitmap, probably a 2d array. Each type an allocation is made, 8 bytes will be reserved before the start of the memory address returned by memalloc(). These 8 bytes will signify the length of the following segment, to be used for benchmarking, and for telling memfree() how much memory to free after the start of the pointer passed to it.
 
 Freeing will consist of going through each bitmap entry at and after the memory address given, until we have reached the size of the segment, given to us by accessing 8 bytes before the start of the segment.
 
-
+--List Psuedocode and Functional Overview--
 List Based
 
   int meminit(long n_bytes, unsigned flags, int parm1, int *parm2)
@@ -73,3 +80,7 @@ List Based
   unsigned random_fit(long nbytes)
     selected_block = rand()%blocks
       where block is a block larger than or equal to n_bytes
+      
+--Metrics Overview--
+      
+We may also have a function that will be exposed via the header file to count contigous in use and not in use memory segments. It will be determined at a later time how this will be implemented, as it relies heavily on how successful our planned implementation actually is.
