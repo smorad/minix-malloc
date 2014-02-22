@@ -131,7 +131,7 @@ void p1_test2(){
 	int mem_locs[50];
 	// Alloc
 	for(i = 0; i < 50; i++){
-		mem_loc[i] = memalloc(num_pages*page_size, handle);
+		mem_locs[i] = memalloc(num_pages*page_size, handle);
 		num_pages++;
 	}
 	// Free
@@ -142,7 +142,7 @@ void p1_test2(){
 	num_pages = 1;
 	unsigned int j = 0;
 	for(i = 0; i < 25; i++){
-		mem_loc[j] = memalloc(num_pages*page_size, handle);
+		mem_locs[j] = memalloc(num_pages*page_size, handle);
 		num_pages++;
 		j += 2;
 	}
