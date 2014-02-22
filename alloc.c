@@ -685,7 +685,6 @@ void count_holes_list(metrics *m){
 	printf("\n------------------------------------------------\n\n");
 	printf("\n\n---------------------DATA----------------------\n\n");
 	qsort(free_holes, sizeof(unsigned long), mp.bitmap_size, comp);
-	int i = 0;
 	for(i = 0; i < mp.bitmap_size; i++) printf("%d\n",free_holes[i]);
 	qsort(taken_holes, sizeof(unsigned long), mp.bitmap_size, comp);
 	print_min(free_holes, taken_holes);
