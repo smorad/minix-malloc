@@ -201,8 +201,8 @@ void p1_test2(){
 }
 
 int main(){
-	//p1_test1();
-	p1_test2();
+	p1_test1();
+	//p1_test2();
 //	test_buddy();
 	//buddy_holes(5);
 	//aux_test_buddy();
