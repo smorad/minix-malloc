@@ -646,7 +646,7 @@ void print_max(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
  	}
  	printf("Maximum Size Block Free:	%lu\n", max);
  	
- 	max = -1;
+ 	max = 0;
  	for(i = 0; i < m->num_taken; i++){
  		if(taken_holes[i] > max) max = taken_holes[i];
  	}
