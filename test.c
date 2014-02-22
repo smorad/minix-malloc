@@ -389,6 +389,7 @@ int main(){
 //	first_fit();
 //	best_fit();
 //	worst_fit();
+	random_fit();
 //	test_buddy();
 	//buddy_holes(5);
 	//aux_test_buddy();
