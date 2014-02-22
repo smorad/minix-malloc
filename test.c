@@ -357,11 +357,38 @@ void worst_fit(){
 	
 }
 
+
+
+void random(){
+	int handle = meminit(8388608,0x44,4,0);
+	void* p[64];
+	int i;
+	for(i=0; i<64; i++){
+		p[i] = memalloc(rand()%8000, handle);
+	}
+	for(i=0; i<12; i++){
+		memfree(p[i*5]);
+	}
+	count_holes(handle);
+}
+
+void first_fit(){
+	int handle = meminit(8388608,0x4,12,0);
+	void* b[32];
+	void* s[32];
+	void* tmp[128];
+	int i;
+	for(int i=0; i<4; i++){
+		b[i] = memalloc()
+	}
+}
+
 int main(){
 	//p1_test1();
 	//p1_test2();
+//	first_fit();
 //	best_fit();
-	worst_fit();
+//	worst_fit();
 //	test_buddy();
 	//buddy_holes(5);
 	//aux_test_buddy();
