@@ -5,10 +5,10 @@ libmem.a : alloc.o
 	ar rcs $@ $^
 
 alloc.o: alloc.c
-	gcc -g -O -c alloc.c
+	gcc -lm -g -O -c alloc.c
 
 test: test.o alloc.h libmem.a
-	gcc -Llibmem.a -g -o test test.c alloc.c alloc.h
+	gcc -lm -Llibmem.a -g -o test test.c alloc.c alloc.h
 
 clean:
 	rm *.o *.a	
