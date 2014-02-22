@@ -122,8 +122,35 @@ void p1_test1(){
 	count_holes(handle);
 }
 
+void p1_test2(){
+	// Best fit
+	int handle = meminit(8388608,0x14,12,0);
+	int num_pages = 1;
+	uint page_size = 4096;
+	unsigned int i;
+	int mem_locs[50];
+	// Alloc
+	for(i = 0; i < 50; i++){
+		mem_loc[i] = memalloc(num_pages*page_size, handle);
+		num_pages++;
+	}
+	// Free
+	for(i = 0; i < 50; i += 2){
+		memfree(mem_loc[i]);
+	}
+	// Realloc
+	num_pages = 1;
+	unsigned int j = 0;
+	for(i = 0; i < 25; i++){
+		mem_loc[j] = memalloc(num_pages*page_size, handle);
+		num_pages++;
+		j += 2;
+	}
+}
+
 int main(){
-	p1_test1();
+	//p1_test1();
+	p1_test2();
 //	test_buddy();
 	//buddy_holes(5);
 	//aux_test_buddy();
