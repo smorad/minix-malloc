@@ -146,6 +146,7 @@ void p1_test2(){
 		num_pages++;
 		j += 2;
 	}
+	count_holes(handle);
 }
 
 int main(){
