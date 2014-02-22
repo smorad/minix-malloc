@@ -708,7 +708,7 @@ void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m)
  * Counts the holes in a list format
  */
 void count_holes_list(metrics *m){
-	printf("\n\n----------Free and Taken Block Sizes------------\n\n");
+	//printf("\n\n----------Free and Taken Block Sizes------------\n\n");
 	// Array to keep track of free and taken holes
 	unsigned int *free_holes = calloc(mp.bitmap_size, (sizeof (unsigned long)));
 	unsigned int *taken_holes = calloc(mp.bitmap_size, (sizeof (unsigned long)));
