@@ -275,14 +275,88 @@ void best_fit(){
 }
 
 void worst_fit(){
+		/*best*/
+	int handle = meminit(8388608,0x14,12,0);
+	void* b[32];
+	void* s[32];
+	int i;
+	for(i=0; i<32; i++){
+		b[i] = memalloc(65535, handle);
+		s[i] = memalloc(16384, handle);
+		
+	}
+	for(i=0; i<32; i++){
+		int j = rand()%32;
+		memfree(b[32]);
+	}
 	
+	for(i=0; i<32; i++){
+		s[i] = memalloc(16384, handle);
+		
+	}
+	count_holes(handle);
+	for(i=0; i<32; i++){
+		memfree(b[i]);
+		memfree(s[i]);
+		
+	}
+	
+	handle = meminit(8388608,0x24,12,0);
+
+	
+	/*worst*/
+	for(i=0; i<32; i++){
+		b[i] = memalloc(65535, handle);
+		s[i] = memalloc(16384, handle);
+		
+	}
+	for(i=0; i<32; i++){
+		int j = rand()%32;
+		memfree(b[32]);
+	}
+	
+	for(i=0; i<32; i++){
+		s[i] = memalloc(16384, handle);
+		
+	}
+	count_holes(handle);
+	for(i=0; i<32; i++){
+		memfree(b[i]);
+		memfree(s[i]);
+		
+	}
+	
+	handle = meminit(8388608,0x44,12,0);
+	
+		/*random*/
+	for(i=0; i<32; i++){
+		b[i] = memalloc(65535, handle);
+		s[i] = memalloc(16384, handle);
+		
+	}
+	for(i=0; i<32; i++){
+		int j = rand()%32;
+		memfree(b[32]);
+	}
+	
+	for(i=0; i<32; i++){
+		s[i] = memalloc(16384, handle);
+		
+	}
+	count_holes(handle);
+	for(i=0; i<32; i++){
+		memfree(b[i]);
+		memfree(s[i]);
+		
+	}
+}
 }
 
 int main(){
 	//p1_test1();
 	//p1_test2();
-	best_fit();
-//	worst_fit();
+//	best_fit();
+	worst_fit();
 //	test_buddy();
 	//buddy_holes(5);
 	//aux_test_buddy();
