@@ -136,7 +136,7 @@ void p1_test2(){
 	}
 	// Free
 	for(i = 0; i < 50; i += 2){
-		memfree(mem_loc[i]);
+		memfree(mem_locs[i]);
 	}
 	// Realloc
 	num_pages = 1;
