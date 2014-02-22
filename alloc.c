@@ -669,7 +669,7 @@ void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m)
 		std_dev = std_dev/(m->num_free-1);
 		std_dev = sqrt(std_dev);
 	}
-    	printf("Standard Deviation Size Block Free:	%llu\n", std_dev);
+    	printf("Std Dev Size Block Free:	%llu\n", std_dev);
 
 	
 	
@@ -698,7 +698,7 @@ void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m)
 		std_dev = std_dev/(m->num_taken-1);
 		std_dev = sqrt(std_dev);
 	}
-    	printf("Standard Deviation Size Block Taken:	%llu\n",std_dev);
+    	printf("Std Dev Size Block Taken:	%llu\n",std_dev);
 
 	
 }
@@ -720,13 +720,13 @@ void count_holes_list(metrics *m){
 			if(curr_free_block != 0){
 				m->size_free += curr_free_block;
 				free_holes[m->num_free++] = curr_free_block;
-				printf("Free Block of Size:	%lu\n", curr_free_block);
+				//printf("Free Block of Size:	%lu\n", curr_free_block);
 				curr_free_block = 0;
 			}
 			if((i == mp.bitmap_size - 1) && curr_taken_block != 0){
 				m->size_taken += curr_taken_block;
 				taken_holes[m->num_taken++] = curr_taken_block;
-				printf("Taken Block of Size:	%lu\n", curr_taken_block);
+				//printf("Taken Block of Size:	%lu\n", curr_taken_block);
 			}
 			curr_taken_block++;
 		}
@@ -734,13 +734,13 @@ void count_holes_list(metrics *m){
 			if(curr_taken_block != 0){
 				m->size_taken += curr_taken_block;
 				taken_holes[m->num_taken++] = curr_taken_block;
-				printf("Taken Block of Size:	%lu\n", curr_taken_block);
+			//	printf("Taken Block of Size:	%lu\n", curr_taken_block);
 				curr_taken_block = 0;
 			}
 			if((i == mp.bitmap_size - 1) && curr_free_block != 0){
 				m->size_free += curr_free_block;
 				free_holes[m->num_free++] = curr_free_block;
-				printf("Free Block of Size:	%lu\n", curr_free_block);
+			//	printf("Free Block of Size:	%lu\n", curr_free_block);
 			}
 			curr_free_block++;	
 		}
