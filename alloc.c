@@ -624,8 +624,8 @@ void count_holes_buddy(btree root, metrics *m){
  */
  
  int comp(const void *a, const void *b) {
- 	if (**(unsigned long **)a < **(unsigned long **)b) return -1;
-   	if (**(unsigned long **)a > **(unsigned long **)b) return 1;
+ 	if (*(unsigned long *)a < *(unsigned long *)b) return -1;
+   	if (*(unsigned long *)a > *(unsigned long *)b) return 1;
    	return 0;
  }
 
