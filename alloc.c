@@ -619,12 +619,55 @@ void count_holes_buddy(btree root, metrics *m){
 		}
 	}
 }
+/* 
+ * Below are all functions for calculating statistics
+ */
+ 
+ int comp(const int * a,const int * b) {
+ 	if (*a==*b)
+		return 0;
+  	else
+    	if (*a < *b)
+        	return -1;
+	else
+      		return 1;
+ }
+
+ print_min(unsigned int *free_holes, unsigned int *taken_holes){
+ 	printf("Minimum Size Block Free:	%lu\n", free_holes[0]);
+ 	printf("Minimum Size Block Taken:	%lu\n", taken_holes[0]);
+ }
+ 
+ print_max(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
+ 	// Print it out!
+ 	printf("Maximum Size Block Free:	%lu\n", free_holes[(m->num_free - 1)]);
+ 	printf("Maximum Size Block Taken:	%lu\n", taken_holes[(m->num_taken - 1)]);
+ }
+ 
+  print_median(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
+ 	unsigned int i;
+ 	unsigned int max = 0;
+ 	for(i = 0; i < m->num_free; i++){
+ 		if(free_holes[i] > max) min = free_holes[i];
+ 	}
+ 	// Print it out!
+ 	printf("Maximum Size Block Free:	%lu\n", max);
+ 	
+ 	for(i = 0; i < m->num_taken; i++){
+ 		if(taken_holes[i] > max) min = taken_holes[i];
+ 	}
+ 	printf("Maximum Size Block Taken:	%lu\n", max);
+ }
 
 /*
  * Counts the holes in a list format
  */
 void count_holes_list(metrics *m){
 	printf("\n\n----------Free and Taken Block Sizes------------\n\n");
+	// Array to keep track of free and taken holes
+	unsigned int *free_holes = malloc(mp.bitmap_size*(sizeof (unsigned int)));
+	unsigned int *taken_holes = malloc(mp.bitmap_size*(sizeof (unsigned int)));
+	
 	unsigned long curr_free_block = 0;
 	unsigned long curr_taken_block = 0;
 	unsigned i;
@@ -632,22 +675,32 @@ void count_holes_list(metrics *m){
 		if(mp.bitmap[i] == TAKEN){
 			if(curr_free_block != 0){
 				m->size_free += curr_free_block;
+				free_holes[m->num_free++] = curr_free_block;
 				printf("Free Block of Size:	%lu\n", curr_free_block);
 				curr_free_block = 0;
 			}
-			m->num_taken++;
 			curr_taken_block++;
 		}
 		else{
 			if(curr_taken_block != 0){
 				m->size_taken += curr_taken_block;
+				taken_holes[m->num_taken++] = curr_taken_block;
 				printf("Taken Block of Size:	%lu\n", curr_taken_block);
 				curr_taken_block = 0;
 			}
-			m->num_free++;
 			curr_free_block++;	
 		}
 	}
+	
+	// Conduct experiments with our arrays
+	printf("\n------------------------------------------------\n\n");
+	printf("\n\n---------------------DATA----------------------\n\n");
+	qsort(free_holes, sizeof(unsigned long), mp.bitmap_size, comp);
+	qsort(taken_holes, sizeof(unsigned long), mp.bitmap_size, comp);
+	print_min(free_holes, taken_holes, m);
+	print_max(free_holes, taken_holes, m);
+	free(free_holes);
+	free(taken_holes);
 	printf("\n------------------------------------------------\n\n");
 	//print_bitmap();
 	return;
