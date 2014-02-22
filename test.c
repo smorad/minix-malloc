@@ -370,6 +370,26 @@ void random_fit(){
 		memfree(p[i*5]);
 	}
 	count_holes(handle);
+	
+	
+	handle = meminit(8388608,0x24,4,0);
+	for(i=0; i<64; i++){
+		p[i] = memalloc(rand()%8000, handle);
+	}
+	for(i=0; i<12; i++){
+		memfree(p[i*5]);
+	}
+	count_holes(handle);
+	
+	
+	handle = meminit(8388608,0x14,4,0);
+	for(i=0; i<64; i++){
+		p[i] = memalloc(rand()%8000, handle);
+	}
+	for(i=0; i<12; i++){
+		memfree(p[i*5]);
+	}
+	count_holes(handle);
 }
 
 void first_fit(){
