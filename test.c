@@ -99,11 +99,13 @@ void buddy_holes(int page_size){
 //	free(b);	
 	count_holes(h);
 	
-	h = meminit(65536, 0x1, page_size, 0);
+	//h = meminit(65536, 0x1, page_size, 0);
 	
 	for(i=0; i<32; i++){
 		memfree(b[i*2]);
 	}
+	
+	count_holes(h);
 }
 
 void p1_test1(){
