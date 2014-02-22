@@ -633,7 +633,7 @@ void print_min(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
  	
  	min = INT_MAX;
  	for(i = 0; i < m->num_taken; i++){
- 		if(free_holes[i] < min) min = num_taken[i];
+ 		if(taken_holes[i] < min) min = taken_holes[i];
  	}
  	printf("Minimum Size Block Taken:	%lu\n", min);
  }
