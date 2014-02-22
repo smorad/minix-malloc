@@ -500,6 +500,7 @@ void* list_memalloc(long n_bytes, int handle){
  * Initializes a list based memalloc
  */
  int list_init(long n_bytes, int parm1, int* parm2){
+	srand (time(NULL));
 	mp.beg = malloc(n_bytes);
 	if (mp.beg == NULL){
 		printf("beg = NULL\n");
