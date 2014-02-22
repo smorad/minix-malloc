@@ -624,6 +624,7 @@ void count_holes_buddy(btree root, metrics *m){
  */
 
 void print_min(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
+	/*
  	unsigned int i;
  	unsigned int min = INT_MAX;
  	for(i = 0; i < m->num_free; i++){
@@ -636,9 +637,13 @@ void print_min(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
  		if(taken_holes[i] < min) min = taken_holes[i];
  	}
  	printf("Minimum Size Block Taken:	%lu\n", min);
+ 	*/
+ 	printf("Minimum Size Block Free:	%lu\n", free_holes[0]);
+ 	printf("Minimum Size Block Taken:	%lu\n", taken_holes[0]);
  }
  
 void print_max(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
+	/*
  	unsigned int i;
  	unsigned int max = 0;
  	for(i = 0; i < m->num_free; i++){
@@ -651,6 +656,9 @@ void print_max(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
  		if(taken_holes[i] > max) max = taken_holes[i];
  	}
  	printf("Maximum Size Block Taken:	%lu\n", max);
+ 	*/
+ 	printf("Minimum Size Block Free:	%lu\n", free_holes[m->num_free]);
+ 	printf("Minimum Size Block Taken:	%lu\n", taken_holes[m->num_taken]);
  }
  
 
@@ -661,10 +669,10 @@ int comp(unsigned int* a, unsigned int* b){
 	else return 0;
 }
  
- void print_median(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
+void print_median(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
+	//qsort(free_holes, m->num_free, sizeof(unsigned int), (int(*)(const void*, const void*))comp);
 	printf("Median Size Block Free:\t%lu\n", free_holes[m->num_free/2]);
     	printf("Median Size Block Taken:\t%lu\n", taken_holes[m->num_free/2]);
-    	qsort(free_holes, m->num_free, sizeof(unsigned int), (int(*)(const void*, const void*))comp);
 }
 
 void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
@@ -730,9 +738,8 @@ void count_holes_list(metrics *m){
 	// Conduct experiments with our arrays
 	printf("\n\n---------------------DATA----------------------\n\n");
 	printf("\nNUM FREE:	%d\n", m->num_free);
-	//for(i = 0; i < m->num_free; i++) printf("%d\n",free_holes[i]);
-	//printf("\n------------------------------------------------\n\n");
-	//for(i = 0; i < m->num_free; i++) printf("%d\n",free_holes[i]);
+	qsort(free_holes, m->num_free, sizeof(unsigned int), (int(*)(const void*, const void*))comp);
+	qsort(taken_holes, m->num_taken, sizeof(unsigned int), (int(*)(const void*, const void*))comp);
 	print_min(free_holes, taken_holes, m);
 	print_max(free_holes, taken_holes, m);
 	print_median(free_holes, taken_holes, m);
