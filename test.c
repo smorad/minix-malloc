@@ -446,8 +446,8 @@ int main(){
 //	best_fit();
 //	worst_fit();
 //	random_fit();
-	test_buddy();
-	//buddy_holes(5);
+//	test_buddy();
+	buddy_holes(5);
 	//aux_test_buddy();
 	//speed_test_buddy();
 	/*speed_test_list(0x4 | 0x0, 4); //first fit
