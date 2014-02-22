@@ -117,7 +117,7 @@ btree insert_node(long begin, long end, void* data, int handle){
 	if(new->size % block_size[handle] != 0){ //uhoh, need to add a block
 		long remainder = new->size/block_size[handle];
 		long increment = abs(block_size[handle] - remainder);
-		printf("size: %lu, adding %lu\n", new->size + increment);
+		//printf("size: %lu, adding %lu\n", new->size + increment);
 		new->size += increment+1;
 		new->seg_end += increment+1;
 	}
@@ -203,15 +203,15 @@ int _free_buddy(void* region, int mode){
 	int i;
 	for(i=0; i<meminit_count; i++){
 		found_node = NULL;
-		printf("attempting to find %p in tree %d\n", region, i);
+		//printf("attempting to find %p in tree %d\n", region, i);
 		find_by_region(trees[i], region, mode);
 		if(found_node!=NULL){
 			found_node->taken = 0;
-			printf("\n\nreturn 0\n\n");
+			//printf("\n\nreturn 0\n\n");
 			return 0;
 		}
 	}
-	printf("\n\nreturn 1\n\n");
+	//printf("\n\nreturn 1\n\n");
 	return ERROR;
 }
 
@@ -297,8 +297,8 @@ mem_ptr mp;
 	for(j = index; j < (index + size); j++){
 		mp.bitmap[j] = value;
 	}
-	printf("Marked %d spots at %d index to %d value\n", size, index, value);
-	print_bitmap();
+	//printf("Marked %d spots at %d index to %d value\n", size, index, value);
+	//print_bitmap();
  }
 
 
@@ -481,7 +481,7 @@ void* list_memalloc(long n_bytes, int handle){
       		header = mp.beg + (bitmap_loc * mp.page_size);
       		*((long*)header) = n_bytes;
       		mem_ptr = mp.beg + (bitmap_loc * mp.page_size) + (sizeof(long));
-      		printf("mem_ptr: %p\n", mem_ptr);
+      		//printf("mem_ptr: %p\n", mem_ptr);
       		return mem_ptr;
       	}
 }
@@ -556,7 +556,7 @@ void* memalloc(long n_bytes, int handle){
 			printf("Memory not initialized correctly\n");
 			return NULL;
 		default:
-			printf("n_bytes: %lu\n", n_bytes);
+			//printf("n_bytes: %lu\n", n_bytes);
 			return list_memalloc(n_bytes, handle);
 	}
 	return NULL;
@@ -579,7 +579,7 @@ void memfree(void *region){
 		free_size = 1;
 	}
 	/* Convert free_size to blocks */
-	printf("Bitmap index freed: %u		of size: %li\n", bitmap_index, free_size );
+	//printf("Bitmap index freed: %u		of size: %li\n", bitmap_index, free_size );
 	mark_mem(bitmap_index, free_size, FREE);
 }
 
@@ -639,6 +639,7 @@ void count_holes_list(metrics *m){
 			curr_free_block++;	
 		}
 	}
+	print_bitmap();
 	return;
 }
 
