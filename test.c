@@ -148,7 +148,8 @@ void p1_test2(){
 		j += 2;
 	}
 	count_holes(handle);
-	
+	// Reset Array
+	for(i = 0; i < 50; i++) memfree(mem_locs[i]);
 	// Worst
 	handle = meminit(8388608,0x24,12,0);
 	num_pages = 1;
@@ -171,6 +172,8 @@ void p1_test2(){
 		j += 2;
 	}
 	count_holes(handle);
+	// Reset Array
+	for(i = 0; i < 50; i++) memfree(mem_locs[i]);
 	/*
 	// Random fit
 	handle = meminit(8388608,0x44,12,0);
