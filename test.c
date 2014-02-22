@@ -350,7 +350,6 @@ void worst_fit(){
 		
 	}
 }
-}
 
 int main(){
 	//p1_test1();
