@@ -639,7 +639,7 @@ void count_holes_list(metrics *m){
 			curr_free_block++;	
 		}
 	}
-	print_bitmap();
+	//print_bitmap();
 	return;
 }
 

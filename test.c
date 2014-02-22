@@ -15,30 +15,6 @@ typedef struct{
 	long long big_arr[65535];
 }big;
 
-void test_list(){
-	int handle;
-	// First fit  = 0x08
-	handle = meminit(4096, 0x24, 4, 0);
-	if(handle == -1){
-		printf("handle == -1\n");
-	}
-	
-	void* mem_area1 = memalloc(64,handle);
-	void* mem_area2 = memalloc(16,handle);
-	void* mem_area3 = memalloc(16,handle);
-	void* mem_area4 = memalloc(64,handle);
-	void* mem_area5 = memalloc(2048,handle);
-	void* mem_area6 = memalloc(1024,handle);
-	memfree(mem_area1);
-	memfree(mem_area2);
-	memfree(mem_area3);
-	memfree(mem_area4);
-	memfree(mem_area5);
-	mem_area1 = memalloc(64,handle);
-
-	count_holes(handle);
-}
-
 
 void test_buddy(){
 	int handle = meminit(4096, 0x1, 5, 0);
@@ -126,22 +102,20 @@ void buddy_holes(int page_size){
 
 void p1_test1(){
 	// Best fit
-	int handle = meminit(8388608,0x14,4096,0);
+	int handle = meminit(8388608,0x14,12,0);
 	unsigned int i;
 	for(i = 0; i < 256; i++){
 		void *b1 = memalloc(4096, handle);
 	}
 	count_holes(handle);
 	// Worst fit
-	int handle = meminit(8388608,0x24,4096,0);
-	unsigned int i;
+	handle = meminit(8388608,0x24,12,0);
 	for(i = 0; i < 256; i++){
 		void *b1 = memalloc(4096, handle);
 	}
 	count_holes(handle);
 	// Random fit
-	int handle = meminit(8388608,0x44,4096,0);
-	unsigned int i;
+	handle = meminit(8388608,0x44,12,0);
 	for(i = 0; i < 256; i++){
 		void *b1 = memalloc(4096, handle);
 	}
@@ -152,7 +126,6 @@ int main(){
 	p1_test1();
 //	test_buddy();
 	//buddy_holes(5);
-	//test_list();
 	//aux_test_buddy();
 	//speed_test_buddy();
 	/*speed_test_list(0x4 | 0x0, 4); //first fit
