@@ -9,5 +9,5 @@ void *memalloc (int handle, long n_bytes);
 
 void memfree (void *region);
 
-void count_holes(int handle, unsigned int mode);
+void count_holes(int handle);
 #endif
