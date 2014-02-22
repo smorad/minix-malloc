@@ -150,11 +150,9 @@ void p1_test2(){
 	count_holes(handle);
 	
 	// Worst
-	int handle = meminit(8388608,0x24,12,0);
-	int num_pages = 1;
-	uint page_size = 4096;
-	unsigned int i;
-	void *mem_locs[50];
+	handle = meminit(8388608,0x24,12,0);
+	num_pages = 1;
+	page_size = 4096;
 	// Alloc
 	for(i = 0; i < 50; i++){
 		mem_locs[i] = memalloc(num_pages*page_size, handle);
@@ -166,7 +164,7 @@ void p1_test2(){
 	}
 	// Realloc
 	num_pages = 1;
-	unsigned int j = 0;
+	j = 0;
 	for(i = 0; i < 25; i++){
 		mem_locs[j] = memalloc(num_pages*page_size, handle);
 		num_pages++;
@@ -175,11 +173,9 @@ void p1_test2(){
 	count_holes(handle);
 	
 	// Random fit
-	int handle = meminit(8388608,0x44,12,0);
-	int num_pages = 1;
-	uint page_size = 4096;
-	unsigned int i;
-	void *mem_locs[50];
+	handle = meminit(8388608,0x44,12,0);
+	num_pages = 1;
+	page_size = 4096;
 	// Alloc
 	for(i = 0; i < 50; i++){
 		mem_locs[i] = memalloc(num_pages*page_size, handle);
@@ -191,7 +187,7 @@ void p1_test2(){
 	}
 	// Realloc
 	num_pages = 1;
-	unsigned int j = 0;
+	j = 0;
 	for(i = 0; i < 25; i++){
 		mem_locs[j] = memalloc(num_pages*page_size, handle);
 		num_pages++;
