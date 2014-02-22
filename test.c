@@ -369,7 +369,11 @@ void random_fit(){
 	for(i=0; i<12; i++){
 		memfree(p[i*5]);
 	}
+
 	count_holes(handle);
+	for(i=0; i<64; i++){
+		memfree(p[i]);
+	}
 	
 	
 	handle = meminit(8388608,0x24,4,0);
@@ -380,7 +384,9 @@ void random_fit(){
 		memfree(p[i*5]);
 	}
 	count_holes(handle);
-	
+	for(i=0; i<64; i++){
+		memfree(p[i]);
+	}
 	
 	handle = meminit(8388608,0x14,4,0);
 	for(i=0; i<64; i++){
