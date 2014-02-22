@@ -1,5 +1,9 @@
+The buddy allocator is going to use a binary tree structure to store pointers to free blocks. Each tree will only have one contigous memory segment. Each node in the tree will point to different offsets within the memory segment, partitioning the tree.
+
+Freeing and coalescing the nodes will take place in the same function. As you go traverse the tree to find your freeable node, the function will check at each node if the node needs to be coalesced. If so, it will be marked as coalescable, and will be freed upon the next call to free.
+
 Buddy Allocator
-  
+
   int meminit(long n_bytes, unsigned flags, int parm1, int *parm2)
     If n_bytes is not power of 2 && (flags==0x1)
       return error
@@ -59,6 +63,10 @@ List Based
       if block >= n_bytes
       global ptr = block
       return block
+      
+  unsigned random_fit(long nbytes)
+    selected_block = rand()%blocks
+      where block is a block larger than or equal to n_bytes
       
   
     
