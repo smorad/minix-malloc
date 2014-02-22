@@ -1,3 +1,6 @@
+Each call to memalloc, meminit, and memfree will call a function which contains the meat of each of these tasks. The actualy meminit, memalloc, and memfree functions will mostly just select which of the corresponding functions to call depending on the mode. We will have an array of handles and an array of modes which will be in parity (ex. handles[17] will be mode mode[17]). This is because memalloc() is not passed mode as an argument.
+
+
 The buddy allocator is going to use a binary tree structure to store pointers to free blocks. Each tree will only have one contigous memory segment. Each node in the tree will point to different offsets within the memory segment, partitioning the tree.
 
 Freeing and coalescing the nodes will take place in the same function. As you go traverse the tree to find your freeable node, the function will check at each node if the node needs to be coalesced. If so, it will be marked as coalescable, and will be freed upon the next call to free.
