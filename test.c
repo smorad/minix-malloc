@@ -359,7 +359,7 @@ void worst_fit(){
 
 
 
-void random(){
+void random_fit(){
 	int handle = meminit(8388608,0x44,4,0);
 	void* p[64];
 	int i;
@@ -378,7 +378,7 @@ void first_fit(){
 	void* s[32];
 	void* tmp[128];
 	int i;
-	for(int i=0; i<4; i++){
+	for(i=0; i<4; i++){
 		b[i] = memalloc()
 	}
 }
