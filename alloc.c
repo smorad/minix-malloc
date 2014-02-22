@@ -623,8 +623,16 @@ void count_holes_buddy(btree root, metrics *m){
  * Below are all functions for calculating statistics
  */
  
- int comp(const unsigned long *a, const unsigned long *b) {
- 	const unsigned long *ia = (const unsigned long)a;
+ int comp(const void *a, const void *b) {
+ 	
+ 	*((long *)ai) = a;
+ 	*((long *)bi) = b;
+ 	
+ 	printf("%lu %lu\n", ai, bi);
+ 	return 0;
+ 	
+ 	
+ /*	const unsigned long *ia = (const unsigned long)a;
  	const unsigned long *ib = (const unsigned long)b;
  	if(ia > ib){
  		printf("a > b: %lu	%lu\n", ia, ib);
@@ -637,7 +645,7 @@ void count_holes_buddy(btree root, metrics *m){
  	else{
  		printf("a == b: %lu	%lu\n", ia, ib);
  		return 0;
- 	}
+ 	}*/
  }
 
  print_min(unsigned int *free_holes, unsigned int *taken_holes){
