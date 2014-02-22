@@ -379,7 +379,7 @@ void first_fit(){
 	void* tmp[128];
 	int i;
 	for(i=0; i<4; i++){
-		b[i] = memalloc()
+	//	b[i] = memalloc();
 	}
 }
 
