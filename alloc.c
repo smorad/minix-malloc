@@ -646,6 +646,8 @@ void print_median(unsigned int *free_holes, unsigned int *taken_holes, metrics *
 }
 
 void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
+	unsigned int* new_arr;
+	unsigned int* new_arr2;
 	unsigned long long mean = 0;
 	unsigned long count;
 	for(count=0; count < m->num_free; count++){
@@ -654,12 +656,43 @@ void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m)
 		
 	mean = mean/m->num_free;
 	printf("Mean Size Block Free:		%llu\n", mean);
+	
+	unsigned long long std_dev = 0;
+	for(count=0; count<m->num_free; count++){
+		new_arr[count] = free_holes[count] - mean;
+		new_arr[count] = new_arr[count] * new_arr[count];
+		std_dev += new_arr[count];
+	}
+	std_dev = std_dev/(m->num_free-1);
+	std_dev = sqrt(std_dev);
+    	printf("Standard Deviation Size Block Free:	%llu\n", std_dev);
+
+	
+	
+	
+	
+	
+	
 	mean = 0;
 	for(count=0; count < m->num_taken; count++){
 		mean += taken_holes[count];
 	}
 	mean = mean/m->num_taken;
 	printf("Mean Size Block Free:		%llu\n", mean);
+	
+	//print std dev
+	
+	std_dev = 0;
+	for(count=0; count<m->num_taken; count++){
+		new_arr2[count] = taken_holes[count] - mean;
+		new_arr2[count] = new_arr2[count] * new_arr2[count];
+		std_dev += new_arr2[count];
+	}
+	std_dev = std_dev/(m->num_taken-1);
+	std_dev = sqrt(std_dev);
+    	printf("Standard Deviation Size Block Taken:	%llu\n",std_dev);
+
+	
 }
 
 /*
