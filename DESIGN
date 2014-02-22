@@ -30,6 +30,9 @@ Buddy Allocator
       
       
 
+List based handlers will rely on a linear bitmap, probably a 2d array. Each type an allocation is made, 8 bytes will be reserved before the start of the memory address returned by memalloc(). These 8 bytes will signify the length of the following segment, to be used for benchmarking, and for telling memfree() how much memory to free after the start of the pointer passed to it.
+
+Freeing will consist of going through each bitmap entry at and after the memory address given, until we have reached the size of the segment, given to us by accessing 8 bytes before the start of the segment.
 
 
 List Based
@@ -61,12 +64,9 @@ List Based
   unsigned next_fit(long n_bytes)
     for each block:
       if block >= n_bytes
-      global ptr = block
+        global ptr = block
       return block
       
   unsigned random_fit(long nbytes)
     selected_block = rand()%blocks
       where block is a block larger than or equal to n_bytes
-      
-  
-    
