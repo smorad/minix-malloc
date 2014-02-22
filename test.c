@@ -414,7 +414,7 @@ void first_fit(){
 	for(i=0; i<100; i++)
 		memfree(b[i]);
 		
-	handle = meminit(8388608,0x8,12,0);
+	handle = meminit(8388608,0xC,12,0);
 	for(i=0; i<4; i++){
 		b[i] = memalloc(160000, handle);
 	}
