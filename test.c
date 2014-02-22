@@ -408,7 +408,7 @@ void first_fit(){
 		b[i] = memalloc(160000, handle);
 	}
 	memfree(b[0]);
-	for(i=0; i<100, i++)
+	for(i=0; i<100; i++)
 		b[i] = memalloc(4, handle);
 }
 
