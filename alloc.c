@@ -29,6 +29,7 @@ typedef struct {
 } mem_ptr;
 
 struct binary_tree{
+	long data_size;
 	int taken;
 	int should_free;
 	long size;
@@ -231,21 +232,19 @@ void* _buddy_alloc(long n_bytes, btree root, void* data, int handle){
 		_buddy_alloc(n_bytes, root->rchild, data, handle);
 	if(root->lchild == NULL && root->rchild == NULL){ 	//if leaf
 		if(root->taken==0 && (root->size == n_bytes)){		//if block is empty and correct size
-			//printf("***FOUND***");
-			//printf("beg: %lu end: %lu\n", root->seg_beg, root->seg_end);
-			//printf("psize: %lu n_bytes: %lu ptr: %p mem_seg: %p\n\n\n ", root->size, n_bytes, root, root->seg_start);
 			root->taken = 1;
 			//printf("root->taken add: %p\n", &root->taken);
 			result_ptr = root->seg_start;
-		//	return root->seg_start;
 			return;
 		}
 		else{
-			//printf("SIZE %lu\n", root->size/2); 
 			if(root->size/2 < n_bytes) return;
 			//split block into children
 			root->lchild = insert_node(root->seg_beg, ((root->seg_beg + root->seg_end)/2), data, handle);
 			root->rchild = insert_node(((root->seg_beg + root->seg_end)/2)+1, root->seg_end+1, data, handle);
+
+			root->lchild->data_size = n_bytes;
+			root->rchild->data_size = n_bytes;
 			//check again starting at current node
 			_buddy_alloc(n_bytes, root, data, handle);
 		}
