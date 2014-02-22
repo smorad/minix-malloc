@@ -124,10 +124,35 @@ void buddy_holes(int page_size){
 	count_holes(h);
 }
 
+void p1_test1(){
+	// Best fit
+	int handle = meminit(8388608,0x14,4096,0);
+	unsigned int i;
+	for(i = 0; i < 256; i++){
+		void *b1 = memalloc(4096, handle);
+	}
+	count_holes(handle);
+	// Worst fit
+	int handle = meminit(8388608,0x24,4096,0);
+	unsigned int i;
+	for(i = 0; i < 256; i++){
+		void *b1 = memalloc(4096, handle);
+	}
+	count_holes(handle);
+	// Random fit
+	int handle = meminit(8388608,0x44,4096,0);
+	unsigned int i;
+	for(i = 0; i < 256; i++){
+		void *b1 = memalloc(4096, handle);
+	}
+	count_holes(handle);
+}
+
 int main(){
+	p1_test1();
 //	test_buddy();
 	//buddy_holes(5);
-	test_list();
+	//test_list();
 	//aux_test_buddy();
 	//speed_test_buddy();
 	/*speed_test_list(0x4 | 0x0, 4); //first fit
