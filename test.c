@@ -307,7 +307,6 @@ void worst_fit(){
 	
 	/*worst*/
 	handle = meminit(8388608,0x24,12,0);
-	int i;
 	for(i=0; i<16; i++){
 		b[i] = memalloc(65535, handle);
 		s[i] = memalloc(16384, handle);
@@ -334,7 +333,6 @@ void worst_fit(){
 	
 		/*random*/
 	handle = meminit(8388608,0x44,12,0);
-	int i;
 	for(i=0; i<16; i++){
 		b[i] = memalloc(65535, handle);
 		s[i] = memalloc(16384, handle);
