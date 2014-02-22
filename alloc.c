@@ -625,8 +625,8 @@ void count_holes_buddy(btree root, metrics *m){
  
  int comp(const void *a, const void *b) {
  	
- 	const long *ai = ((const long *)a);
- 	const long *bi = ((const long *)b);
+ 	const unsigned long *ai = ((const unsigned long *)a);
+ 	const unsigned long *bi = ((const unsigned long *)b);
  	
  	printf("%lu %lu\n", ai, bi);
  	return 0;
@@ -669,8 +669,8 @@ void count_holes_buddy(btree root, metrics *m){
 void count_holes_list(metrics *m){
 	printf("\n\n----------Free and Taken Block Sizes------------\n\n");
 	// Array to keep track of free and taken holes
-	unsigned int *free_holes = malloc(mp.bitmap_size*(sizeof (unsigned long)));
-	unsigned int *taken_holes = malloc(mp.bitmap_size*(sizeof (unsigned long)));
+	unsigned int *free_holes = calloc(mp.bitmap_size, (sizeof (unsigned long)));
+	unsigned int *taken_holes = calloc(mp.bitmap_size, (sizeof (unsigned long)));
 	
 	unsigned long curr_free_block = 0;
 	unsigned long curr_taken_block = 0;
