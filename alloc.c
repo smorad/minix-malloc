@@ -698,11 +698,11 @@ void count_holes_list(metrics *m){
 	printf("\n------------------------------------------------\n\n");
 	printf("\n\n---------------------DATA----------------------\n\n");
 	//for(i = 0; i < m->num_free; i++) printf("%d\n",free_holes[i]);
-	unsigned long *test = {3,4,1,2,6};
-	for(i = 0; i < 5; i++) printf("%d\n",test[i]);
+	unsigned long test[5] = {3,4,1,2,6};
+	for(i = 0; i < 5; i++) printf("%lu\n",test[i]);
 	printf("\n------------------------------------------------\n\n");
 	qsort(test, 5, sizeof(unsigned long), comp);
-	for(i = 0; i < 5; i++) printf("%d\n",test[i]);
+	for(i = 0; i < 5; i++) printf("%lu\n",test[i]);
 	//qsort(free_holes, (size_t) m->num_free, sizeof(free_holes[0]), (int (*) (const void*, const void*)) comp);
 	//for(i = 0; i < m->num_free; i++) printf("%d\n",free_holes[i]);
 	//qsort(taken_holes, m->num_taken, sizeof(unsigned long), comp);
