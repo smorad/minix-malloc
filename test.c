@@ -128,7 +128,7 @@ void p1_test2(){
 	int num_pages = 1;
 	uint page_size = 4096;
 	unsigned int i;
-	int mem_locs[50];
+	void *mem_locs[50];
 	// Alloc
 	for(i = 0; i < 50; i++){
 		mem_locs[i] = memalloc(num_pages*page_size, handle);
