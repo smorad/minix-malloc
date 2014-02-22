@@ -508,33 +508,33 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 	int rv;
 	mp.count = 0;	
 	if(flags==0x1){
-		//printf("0x1\n");
+		printf("\n\n---------------------BUDDY---------------------\n\n");
 		rv = _buddy_init(n_bytes, parm1);
 		memalloc_mode[memalloc_mode_counter] = BUDDY;
 		
 	}
 	else if(flags==(0x00 | 0x4)){
-		printf("FIRST FIT\n");
+		printf("\n\n-------------------FIRST FIT--------------------\n\n");
 		rv = list_init(n_bytes, parm1, parm2);
 		if(rv != ERROR) memalloc_mode[memalloc_mode_counter] = FIRST;
 	}
 	else if (flags==(0x08| 0x4)){
-		printf("NEXT FIT\n");
+		printf("\n\n--------------------NEXT FIT--------------------\n\n");
 		rv = list_init(n_bytes, parm1, parm2);
 		if(rv != ERROR) memalloc_mode[memalloc_mode_counter] = NEXT;
 	}
 	else if (flags==(0x10| 0x4)){
-		printf("BEST FIT\n");
+		printf("\n\n--------------------BEST FIT--------------------\n\n");
 		rv = list_init(n_bytes, parm1, parm2);
 		if(rv != ERROR) memalloc_mode[memalloc_mode_counter] = BEST;
 	}
 	else if (flags==(0x20| 0x4)){
-		printf("WORST FIT\n");
+		printf("\n\n-------------------WORST FIT--------------------\n\n");
 		rv = list_init(n_bytes, parm1, parm2);
 		if(rv != ERROR) memalloc_mode[memalloc_mode_counter] = WORST;
 	}
 	else if (flags==(0x40| 0x4)){
-		printf("RANDOM FIT\n");
+		printf("\n\n-------------------RANDOM FIT-------------------\n\n");
 		rv = list_init(n_bytes, parm1, parm2);
 		if(rv != ERROR) memalloc_mode[memalloc_mode_counter] = RANDOM;
 	}
