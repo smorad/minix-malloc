@@ -683,7 +683,7 @@ void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m)
 		mean += taken_holes[count];
 	}
 	mean = mean/m->num_taken;
-	printf("Mean Size Block Free:		%llu\n", mean);
+	printf("Mean Size Block Taken:		%llu\n", mean);
 	
 	//print std dev
 	
@@ -749,7 +749,6 @@ void count_holes_list(metrics *m){
 	
 	// Conduct experiments with our arrays
 	printf("\n\n---------------------DATA----------------------\n\n");
-	printf("\nNUM FREE:	%d\n", m->num_free);
 	qsort(free_holes, m->num_free, sizeof(unsigned int), (int(*)(const void*, const void*))comp);
 	qsort(taken_holes, m->num_taken, sizeof(unsigned int), (int(*)(const void*, const void*))comp);
 	print_min(free_holes, taken_holes, m);
