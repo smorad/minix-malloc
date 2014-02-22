@@ -91,13 +91,19 @@ void speed_test_all(unsigned page_size){
 
 void buddy_holes(int page_size){
 	int h = meminit(65536, 0x1, page_size, 0);
-	big *b;
+	big *b[64];
 	int i;
 
 	for(i=0; i<64; i++)
-		b = memalloc(1024, h);
+		b[i] = memalloc(1024, h);
 //	free(b);	
 	count_holes(h);
+	
+	h = meminit(65536, 0x1, page_size, 0);
+	
+	for(i=0; i<32; i++){
+		memfree(b[i*2]);
+	}
 }
 
 void p1_test1(){
