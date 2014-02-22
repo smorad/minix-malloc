@@ -655,6 +655,7 @@ void print_max(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
  
 
 int comp(unsigned int* a, unsigned int* b){
+	printf("%u %u\n", *a, *b);
 	if(*a<*b) return -1;
 	else if(*a>*b) return 1;
 	else return 0;
@@ -674,13 +675,13 @@ void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m)
 	}
 		
 	mean = mean/m->num_free;
-	printf("Mean Size Block Free:	%llu\n, mean);
+	printf("Mean Size Block Free:	%llu\n", mean);
 	mean = 0;
 	for(count=0; count < m->num_taken; count++){
 		mean += taken_holes[count];
 	}
 	mean = mean/m->num_taken;
-	printf("Mean Size Block Free:	%llu\n, mean);
+	printf("Mean Size Block Free:	%llu\n", mean);
 }
 
 /*
