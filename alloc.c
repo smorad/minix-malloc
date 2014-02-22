@@ -651,7 +651,7 @@ void count_holes(int handle){
 			count_holes_buddy(trees[handle], m);
 			break;
 		default:
-			
+			count_holes_list(m);
 			break;
 	}
 	print_memtree(trees[handle], 0);
