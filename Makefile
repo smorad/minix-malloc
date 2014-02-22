@@ -9,6 +9,9 @@ alloc.o: alloc.c
 
 test: test.o alloc.h libmem.a
 	gcc -lm -Llibmem.a -g -o test test.c alloc.c alloc.h
+	
+tar: alloc.c alloc.h Makefile test.c README.md DESIGN paper.pdf
+        tar -cvf proj3.tar $^
 
 clean:
 	rm *.o *.a	
