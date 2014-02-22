@@ -629,7 +629,7 @@ void print_min(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
  	for(i = 0; i < m->num_free; i++){
  		if(free_holes[i] < min) min = free_holes[i];
  	}
- 	printf("Minimum Size Block Free:	%lu\n", min);
+ 	printf("Minimum Size Block Free:	%lu	%d\n", min, m->num_free);
  	
  	min = INT_MAX;
  	for(i = 0; i < m->num_taken; i++){
@@ -644,7 +644,7 @@ void print_max(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
  	for(i = 0; i < m->num_free; i++){
  		if(free_holes[i] > max) max = free_holes[i];
  	}
- 	printf("Maximum Size Block Free:	%lu\n", max);
+ 	printf("Maximum Size Block Free:	%lu	%d\n", max, m->num_free);
  	
  	max = 0;
  	for(i = 0; i < m->num_taken; i++){
