@@ -400,13 +400,16 @@ void random_fit(){
 
 void first_fit(){
 	int handle = meminit(8388608,0x4,12,0);
-	void* b[32];
+	void* b[100];
 	void* s[32];
 	void* tmp[128];
 	int i;
 	for(i=0; i<4; i++){
-	//	b[i] = memalloc();
+		b[i] = memalloc(160000, handle);
 	}
+	memfree(b[0]);
+	for(i=0; i<100, i++)
+		b[i] = memalloc(4, handle);
 }
 
 int main(){
