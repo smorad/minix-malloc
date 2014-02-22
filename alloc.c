@@ -640,7 +640,7 @@ void count_holes_list(metrics *m){
 			curr_free_block++;	
 		}
 	}
-	printf("\n\n------------------------------------------------\n\n");
+	printf("\n------------------------------------------------\n\n");
 	//print_bitmap();
 	return;
 }
