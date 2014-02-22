@@ -622,42 +622,38 @@ void count_holes_buddy(btree root, metrics *m){
 /* 
  * Below are all functions for calculating statistics
  */
- 
- int comp(unsigned long *a, unsigned long *b) {
- 	printf("%lu %lu\n", *a, *b);
- 	if(*a < *b) return -1;
- 	else if(*a > *b) return 1;
- 	else return 0;
- 	
- 	
- /*	const unsigned long *ia = (const unsigned long)a;
- 	const unsigned long *ib = (const unsigned long)b;
- 	if(ia > ib){
- 		printf("a > b: %lu	%lu\n", ia, ib);
- 		return 1;
- 	}
- 	else if(ia < ib){
- 		printf("a < b: %lu	%lu\n", ia, ib);
- 		return -1;
- 	}
- 	else{
- 		printf("a == b: %lu	%lu\n", ia, ib);
- 		return 0;
- 	}*/
- }
 
- print_min(unsigned int *free_holes, unsigned int *taken_holes){
- 	printf("Minimum Size Block Free:	%lu\n", free_holes[0]);
- 	printf("Minimum Size Block Taken:	%lu\n", taken_holes[0]);
+void print_min(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
+ 	unsigned int i;
+ 	unsigned int min = INT_MAX;
+ 	for(i = 0; i < m->num_free; i++){
+ 		if(free_holes[i] < min) min = free_holes[i];
+ 	}
+ 	printf("Minimum Size Block Free:	%lu\n", min);
+ 	
+ 	min = INT_MAX;
+ 	for(i = 0; i < m->num_taken; i++){
+ 		if(free_holes[i] < min) min = num_taken[i];
+ 	}
+ 	printf("Minimum Size Block Taken:	%lu\n", min);
  }
  
- print_max(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
- 	// Print it out!
- 	printf("Maximum Size Block Free:	%lu\n", free_holes[(m->num_free - 1)]);
- 	printf("Maximum Size Block Taken:	%lu\n", taken_holes[(m->num_taken - 1)]);
+void print_max(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
+ 	unsigned int i;
+ 	unsigned int max = -1;
+ 	for(i = 0; i < m->num_free; i++){
+ 		if(free_holes[i] > max) max = free_holes[i];
+ 	}
+ 	printf("Maximum Size Block Free:	%lu\n", max);
+ 	
+ 	max = -1;
+ 	for(i = 0; i < m->num_taken; i++){
+ 		if(taken_holes[i] > max) max = taken_holes[i];
+ 	}
+ 	printf("Maximum Size Block Taken:	%lu\n", max);
  }
  
-  print_median(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
+void print_median(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
   	
  }
 
@@ -695,14 +691,11 @@ void count_holes_list(metrics *m){
 	}
 	
 	// Conduct experiments with our arrays
-	printf("\n------------------------------------------------\n\n");
 	printf("\n\n---------------------DATA----------------------\n\n");
-	for(i = 0; i < mp.bitmap_size; i++) printf("%d\n",free_holes[i]);
-	printf("\n------------------------------------------------\n\n");
-	qsort(free_holes, mp.bitmap_size, sizeof(free_holes[0]), (int (*) (const void*, const void*)) comp);
-	for(i = 0; i < mp.bitmap_size; i++) printf("%d\n",free_holes[i]);
-	//qsort(taken_holes, m->num_taken, sizeof(unsigned long), comp);
-	print_min(free_holes, taken_holes);
+	//for(i = 0; i < m->num_free; i++) printf("%d\n",free_holes[i]);
+	//printf("\n------------------------------------------------\n\n");
+	//for(i = 0; i < m->num_free; i++) printf("%d\n",free_holes[i]);
+	print_min(free_holes, taken_holes, m);
 	print_max(free_holes, taken_holes, m);
 	free(free_holes);
 	free(taken_holes);
