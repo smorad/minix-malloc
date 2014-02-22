@@ -408,9 +408,35 @@ void first_fit(){
 		b[i] = memalloc(160000, handle);
 	}
 	memfree(b[0]);
-	for(i=0; i<100; i++)
+	for(i=4; i<100; i++)
 		b[i] = memalloc(4, handle);
 	count_holes(handle);
+	for(i=0; i<100; i++)
+		memfree(b[i]);
+		
+	handle = meminit(8388608,0x8,12,0);
+	for(i=0; i<4; i++){
+		b[i] = memalloc(160000, handle);
+	}
+	memfree(b[0]);
+	for(i=4; i<100; i++)
+		b[i] = memalloc(4, handle);
+	count_holes(handle);
+	for(i=0; i<100; i++)
+		memfree(b[i]);
+		
+		
+	handle = meminit(8388608,0x24,12,0);
+	for(i=0; i<4; i++){
+		b[i] = memalloc(160000, handle);
+	}
+	memfree(b[0]);
+	for(i=4; i<100; i++)
+		b[i] = memalloc(4, handle);
+	count_holes(handle);
+	for(i=0; i<100; i++)
+		memfree(b[i]);
+	
 }
 
 int main(){
