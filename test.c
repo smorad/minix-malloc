@@ -415,10 +415,10 @@ void first_fit(){
 int main(){
 	//p1_test1();
 	//p1_test2();
-//	first_fit();
+	first_fit();
 //	best_fit();
 //	worst_fit();
-	random_fit();
+//	random_fit();
 //	test_buddy();
 	//buddy_holes(5);
 	//aux_test_buddy();
