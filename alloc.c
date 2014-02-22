@@ -694,7 +694,7 @@ void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m)
 		new_arr2[count] = new_arr2[count] * new_arr2[count];
 		std_dev += new_arr2[count];
 	}
-	if(m->num_free<=1)
+	if(m->num_taken<=1)
 		std_dev = 0;
 	else{
 		std_dev = std_dev/(m->num_taken-1);
