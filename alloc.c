@@ -623,7 +623,7 @@ void count_holes_list(metrics *m){
 		if(mp.bitmap[i] == TAKEN){
 			if(curr_free_block != 0){
 				m->size_free += curr_free_block;
-				printf("Free Block of Size:	%ul\n", curr_free_block);
+				printf("Free Block of Size:	%lu\n", curr_free_block);
 				curr_free_block = 0;
 			}
 			m->num_taken++;
@@ -632,7 +632,7 @@ void count_holes_list(metrics *m){
 		else{
 			if(curr_taken_block != 0){
 				m->size_taken += curr_taken_block;
-				printf("Taken Block of Size:	%ul\n", curr_taken_block);
+				printf("Taken Block of Size:	%lu\n", curr_taken_block);
 				curr_taken_block = 0;
 			}
 			m->num_free++;
