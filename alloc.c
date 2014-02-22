@@ -657,13 +657,13 @@ void print_max(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
 int comp(unsigned int* a, unsigned int* b){
 	if(*a<*b) return -1;
 	else if(*a>*b) return 1;
-	else return ;
+	else return 0;
 }
  
  void print_median(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
 	printf("Median Size Block Free:\t%lu\n", free_holes[m->num_free/2]);
     	printf("Median Size Block Taken:\t%lu\n", taken_holes[m->num_free/2]);
-    	qsort(free_holes, m->free_holes, sizeof(unsigned int), (int(*)(const void*, const void*))comp)
+    	qsort(free_holes, m->free_holes, sizeof(unsigned int), (int(*)(const void*, const void*))comp);
 }
 
 void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
