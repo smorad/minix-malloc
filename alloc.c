@@ -646,8 +646,8 @@ void print_median(unsigned int *free_holes, unsigned int *taken_holes, metrics *
 }
 
 void print_mean(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
-	unsigned int* new_arr;
-	unsigned int* new_arr2;
+	unsigned int new_arr[65335];
+	unsigned int new_arr2[65535];
 	unsigned long long mean = 0;
 	unsigned long count;
 	for(count=0; count < m->num_free; count++){
