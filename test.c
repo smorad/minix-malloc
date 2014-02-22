@@ -410,6 +410,7 @@ void first_fit(){
 	memfree(b[0]);
 	for(i=0; i<100; i++)
 		b[i] = memalloc(4, handle);
+	count_holes(handle);
 }
 
 int main(){
