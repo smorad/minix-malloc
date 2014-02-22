@@ -226,7 +226,8 @@ void best_fit(){
 		
 	}
 	
-	
+	handle = meminit(8388608,0x24,12,0);
+
 	
 	/*worst*/
 	for(i=0; i<32; i++){
@@ -248,6 +249,8 @@ void best_fit(){
 		memfree(s[i]);
 		
 	}
+	
+	handle = meminit(8388608,0x44,12,0);
 	
 		/*random*/
 	for(i=0; i<32; i++){
@@ -271,10 +274,15 @@ void best_fit(){
 	}
 }
 
+void worst_fit(){
+	
+}
+
 int main(){
 	//p1_test1();
 	//p1_test2();
 	best_fit();
+//	worst_fit();
 //	test_buddy();
 	//buddy_holes(5);
 	//aux_test_buddy();
