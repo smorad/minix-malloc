@@ -112,6 +112,7 @@ void print_memtree(btree root, int start){
 btree insert_node(long begin, long end, void* data, int handle){
 	btree new = malloc(sizeof(struct binary_tree));
 	assert(new!=NULL);
+	new->data_size = 0;
 	new->seg_beg = begin;
 	new->seg_end = end;
 	new->size = end - begin;
