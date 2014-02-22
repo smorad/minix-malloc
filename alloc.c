@@ -417,22 +417,30 @@ int next_area_free(int size){
 /*
  * Check the bitmap for a random free area of the target size
  * size - # of pages
- * Returns the beginning indiex in the bitmap
+ * Returns the beginning index in the bitmap
  * For freelist
  */
 int random_area_free(int size){
-	int choose_random;
-	choose_random = rand()%4;
-	switch(choose_random){
-		case 0:
-			return first_area_free(size);
-		case 1:
-			return next_area_free(size);
-		case 2:
-			return worst_area_free(size);
-		case 3:
-			return best_area_free(size);
+	unsigned int i;
+	int random_index = rand() % mp.bitmap_size;
+	int count = 0;
+	unsigned int full_circle = 0;
+	for(i = random_index; full_circle < mp.bitmap_size; i++){
+		// Check to see if there is enough free space
+		if(count >= size){
+			return (i - count);
+		}
+		if(mp.bitmap[i] == TAKEN) count = 0;
+		else count++;
+		
+		if(i == mp.bitmap_size - 1){
+			i = 0;
+		}
+		full_circle++;
 	}
+	// There is not enough free space
+	printf("Not enough room for block of size %d\n", size);
+	return ERROR;
 }
 
 
