@@ -231,11 +231,11 @@ void* _buddy_alloc(long n_bytes, btree root, void* data, int handle){
 		_buddy_alloc(n_bytes, root->rchild, data, handle);
 	if(root->lchild == NULL && root->rchild == NULL){ 	//if leaf
 		if(root->taken==0 && (root->size == n_bytes)){		//if block is empty and correct size
-			printf("***FOUND***");
+			//printf("***FOUND***");
 			//printf("beg: %lu end: %lu\n", root->seg_beg, root->seg_end);
 			//printf("psize: %lu n_bytes: %lu ptr: %p mem_seg: %p\n\n\n ", root->size, n_bytes, root, root->seg_start);
 			root->taken = 1;
-			printf("root->taken add: %p\n", &root->taken);
+			//printf("root->taken add: %p\n", &root->taken);
 			result_ptr = root->seg_start;
 		//	return root->seg_start;
 			return;
@@ -600,7 +600,7 @@ void count_holes_buddy(btree root, metrics *m){
 	if(root->rchild!=NULL)
 		count_holes_buddy(root->rchild, m);
 	if(root->lchild == NULL && root->rchild == NULL){
-		printf("ptr: %p\n", &root->taken);
+		//printf("ptr: %p\n", &root->taken);
 		if(root->taken == 1){
 			m->num_taken++;
 			m->size_taken += root->size;
