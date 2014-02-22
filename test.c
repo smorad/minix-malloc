@@ -303,6 +303,60 @@ void worst_fit(){
 		
 	}
 	
+	
+	
+	/*worst*/
+	handle = meminit(8388608,0x24,12,0);
+	int i;
+	for(i=0; i<16; i++){
+		b[i] = memalloc(65535, handle);
+		s[i] = memalloc(16384, handle);
+		
+	}
+	for(i=0; i<16; i++){
+		memfree(b[i]);
+	}
+	
+	for(i=0; i<16; i++){
+		s[i] = memalloc(16384, handle);
+		
+	}
+	for(i=0; i<64; i++)
+		 tmp[i] = memalloc(4, handle);
+	count_holes(handle);
+	for(i=0; i<16; i++){
+		memfree(b[i]);
+		memfree(s[i]);
+		
+	}
+	
+	
+	
+		/*random*/
+	handle = meminit(8388608,0x44,12,0);
+	int i;
+	for(i=0; i<16; i++){
+		b[i] = memalloc(65535, handle);
+		s[i] = memalloc(16384, handle);
+		
+	}
+	for(i=0; i<16; i++){
+		memfree(b[i]);
+	}
+	
+	for(i=0; i<16; i++){
+		s[i] = memalloc(16384, handle);
+		
+	}
+	for(i=0; i<64; i++)
+		 tmp[i] = memalloc(4, handle);
+	count_holes(handle);
+	for(i=0; i<16; i++){
+		memfree(b[i]);
+		memfree(s[i]);
+		
+	}
+	
 }
 
 int main(){
