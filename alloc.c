@@ -626,9 +626,18 @@ void count_holes_buddy(btree root, metrics *m){
  int comp(const void *a, const void *b) {
  	const unsigned long *ia = (const unsigned long *)a;
  	const unsigned long *ib = (const unsigned long *)b;
- 	if(ia > ib) return 1;
- 	else if(ia < ib) return -1;
- 	else return 0;
+ 	if(ia > ib){
+ 		printf("a > b: %lu	%lu\n", ia, ib);
+ 		return 1;
+ 	}
+ 	else if(ia < ib){
+ 		printf("a < b: %lu	%lu\n", ia, ib);
+ 		return -1;
+ 	}
+ 	else{
+ 		printf("a == b: %lu	%lu\n", ia, ib);
+ 		return 0;
+ 	}
  }
 
  print_min(unsigned int *free_holes, unsigned int *taken_holes){
@@ -682,10 +691,10 @@ void count_holes_list(metrics *m){
 	// Conduct experiments with our arrays
 	printf("\n------------------------------------------------\n\n");
 	printf("\n\n---------------------DATA----------------------\n\n");
-	for(i = 0; i < m->num_free; i++) printf("%d\n",free_holes[i]);
+	//for(i = 0; i < m->num_free; i++) printf("%d\n",free_holes[i]);
 	printf("\n------------------------------------------------\n\n");
 	qsort(free_holes, m->num_free, sizeof(unsigned long), comp);
-	for(i = 0; i < m->num_free; i++) printf("%d\n",free_holes[i]);
+	//for(i = 0; i < m->num_free; i++) printf("%d\n",free_holes[i]);
 	qsort(taken_holes, m->num_taken, sizeof(unsigned long), comp);
 	print_min(free_holes, taken_holes);
 	print_max(free_holes, taken_holes, m);
