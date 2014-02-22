@@ -102,20 +102,20 @@ void buddy_holes(int page_size){
 
 void p1_test1(){
 	// Best fit
-	int handle = meminit(8388608,0x14,4096,0);
+	int handle = meminit(8388608,0x14,12,0);
 	unsigned int i;
 	for(i = 0; i < 256; i++){
 		void *b1 = memalloc(4096, handle);
 	}
 	count_holes(handle);
 	// Worst fit
-	handle = meminit(8388608,0x24,4096,0);
+	handle = meminit(8388608,0x24,12,0);
 	for(i = 0; i < 256; i++){
 		void *b1 = memalloc(4096, handle);
 	}
 	count_holes(handle);
 	// Random fit
-	handle = meminit(8388608,0x44,4096,0);
+	handle = meminit(8388608,0x44,12,0);
 	for(i = 0; i < 256; i++){
 		void *b1 = memalloc(4096, handle);
 	}
