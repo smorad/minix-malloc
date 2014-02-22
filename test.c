@@ -171,7 +171,7 @@ void p1_test2(){
 		j += 2;
 	}
 	count_holes(handle);
-	
+	/*
 	// Random fit
 	handle = meminit(8388608,0x44,12,0);
 	num_pages = 1;
@@ -194,6 +194,7 @@ void p1_test2(){
 		j += 2;
 	}
 	count_holes(handle);
+	*/
 }
 
 int main(){
