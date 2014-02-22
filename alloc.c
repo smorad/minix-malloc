@@ -645,18 +645,7 @@ void count_holes_buddy(btree root, metrics *m){
  }
  
   print_median(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
- 	unsigned int i;
- 	unsigned int max = 0;
- 	for(i = 0; i < m->num_free; i++){
- 		if(free_holes[i] > max) min = free_holes[i];
- 	}
- 	// Print it out!
- 	printf("Maximum Size Block Free:	%lu\n", max);
- 	
- 	for(i = 0; i < m->num_taken; i++){
- 		if(taken_holes[i] > max) min = taken_holes[i];
- 	}
- 	printf("Maximum Size Block Taken:	%lu\n", max);
+  	
  }
 
 /*
