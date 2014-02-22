@@ -200,9 +200,31 @@ void p1_test2(){
 	
 }
 
+void best_fit(){
+	int handle = meminit(8388608,0x14,12,0);
+	void* b[32]
+	void* s[32]
+	int i;
+	for(i=0; i<32; i++){
+		b[i] = memalloc(65535, handle);
+		s[i] = memalloc(16384, handle);
+		
+	}
+	for(i=0; i<32; i++){
+		memfree(b[i]);
+	}
+	
+	for(i=0; i<32; i++){
+		s[i] = memalloc(16384, handle);
+		
+	}
+	count_holes(handle);
+}
+
 int main(){
-	p1_test1();
+	//p1_test1();
 	//p1_test2();
+	best_fit();
 //	test_buddy();
 	//buddy_holes(5);
 	//aux_test_buddy();
