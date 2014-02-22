@@ -46,7 +46,7 @@ void* data[1024];	//our memory contents
 int block_size[1024];
 int memalloc_mode[1024];
 int memalloc_mode_counter = 0;
-int btree_count = 0;
+int meminit_count = 0;
 
 
 int power2(long x){
@@ -143,16 +143,16 @@ int _buddy_init(long n_bytes, int parm1){
 		return ERROR;
 	}
 	assert(parm1>0);
-	block_size[btree_count] = pow2(parm1); //block_Size_in_bytes 
-	trees[btree_count] = insert_node(0, n_bytes, NULL, btree_count); //change me for pages
-	printf("ROOT NODE FOR HANDLE %d IS %p\n", btree_count, trees[btree_count]);
-	//trees[btree_count]->seg_start = (void*)malloc(n_bytes+10); //10 extra bytes just in case
-	data[btree_count] = malloc(n_bytes+10);
-	if (trees[btree_count] == NULL){
+	block_size[meminit_count] = pow2(parm1); //block_Size_in_bytes 
+	trees[meminit_count] = insert_node(0, n_bytes, NULL, meminit_count); //change me for pages
+	printf("ROOT NODE FOR HANDLE %d IS %p\n", meminit_count, trees[meminit_count]);
+	//trees[meminit_count]->seg_start = (void*)malloc(n_bytes+10); //10 extra bytes just in case
+	data[meminit_count] = malloc(n_bytes+10);
+	if (trees[meminit_count] == NULL){
 		printf("beg = NULL\n");
 		return ERROR;
 	}
-	return btree_count++;
+	return meminit_count++;
 }
 
 
@@ -201,7 +201,7 @@ btree find_by_region(btree root, void* region, int mode){	//will return node wit
 
 int _free_buddy(void* region, int mode){
 	int i;
-	for(i=0; i<btree_count; i++){
+	for(i=0; i<meminit_count; i++){
 		found_node = NULL;
 		printf("attempting to find %p in tree %d\n", region, i);
 		find_by_region(trees[i], region, mode);
@@ -278,6 +278,13 @@ mem_ptr mp;
 	}
 	printf("\n--------------------ENDBMP----------------------\n");
  }
+ 
+ /*
+  * Finds the holes in the linear bitmap
+  */
+ void find_holes(){
+ 	
+ } 
 
 /*
  * Marks memory with the given value
@@ -447,7 +454,7 @@ void* list_memalloc(long n_bytes, int handle){
 	}
 	int bitmap_loc;
 	/* Switch for different list cases */
-	switch(handle){
+	switch(memalloc_mode[handle]){
 		case FIRST: 
     			bitmap_loc = first_area_free(curr_size);
     			break;
@@ -494,7 +501,7 @@ void* list_memalloc(long n_bytes, int handle){
 	mp.bitmap = calloc(1, mp.bitmap_size);
 	mp.count++;
 	printf("parm1: %d\nbeg: %p\npage_size: %u\nbitmap_size: %u\n", parm1, mp.beg, mp.page_size, mp.bitmap_size);
-	return LIST;
+	return meminit_count++;
 }
 
 int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
@@ -509,27 +516,27 @@ int meminit(long n_bytes, unsigned int flags, int parm1, int* parm2){
 	else if(flags==(0x00 | 0x4)){
 		printf("FIRST FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
-		if(rv != ERROR) rv = FIRST;
+		if(rv != ERROR) memalloc_mode[memalloc_mode_counter] = FIRST;
 	}
 	else if (flags==(0x08| 0x4)){
 		printf("NEXT FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
-		if(rv != ERROR) rv = NEXT;
+		if(rv != ERROR) memalloc_mode[memalloc_mode_counter] = NEXT;
 	}
 	else if (flags==(0x10| 0x4)){
 		printf("BEST FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
-		if(rv != ERROR) rv = BEST;
+		if(rv != ERROR) memalloc_mode[memalloc_mode_counter] = BEST;
 	}
 	else if (flags==(0x20| 0x4)){
 		printf("WORST FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
-		if(rv != ERROR) rv = WORST;
+		if(rv != ERROR) memalloc_mode[memalloc_mode_counter] = WORST;
 	}
 	else if (flags==(0x40| 0x4)){
 		printf("RANDOM FIT\n");
 		rv = list_init(n_bytes, parm1, parm2);
-		if(rv != ERROR) rv = RANDOM;
+		if(rv != ERROR) memalloc_mode[memalloc_mode_counter] = RANDOM;
 	}
 	else{
 		printf("Invalid bits set: %#010x\n", flags);
@@ -576,7 +583,9 @@ void memfree(void *region){
 	mark_mem(bitmap_index, free_size, FREE);
 }
 
-
+/*
+ * Struct to keep track of holes we find in the memory
+ */
 typedef struct {
 	int num_free, num_taken;
    	unsigned long size_free, size_taken;
@@ -603,13 +612,47 @@ void count_holes_buddy(btree root, metrics *m){
 	}
 }
 
+/*
+ * Counts the holes in a list format
+ */
+void count_holes_list(metrics *m){
+	unsigned long curr_free_block = 0;
+	unsigned long curr_taken_block = 0;
+	unsigned i;
+	for(i = 0; i < mp.bitmap_size; i++){
+		if(mp.bitmap[i] == TAKEN){
+			if(curr_free_block != 0){
+				m->size_free += curr_free_block;
+				printf("Free Block of Size:	%ul\n", curr_free_block);
+				curr_free_block = 0;
+			}
+			m->num_taken++;
+			curr_taken_block++;
+		}
+		else{
+			if(curr_taken_block != 0){
+				m->size_taken += curr_taken_block;
+				printf("Taken Block of Size:	%ul\n", curr_taken_block);
+				curr_taken_block = 0;
+			}
+			m->num_free++;
+			curr_free_block++;	
+		}
+	}
+	return;
+}
 
-void count_holes(int handle, unsigned int mode){
+void count_holes(int handle){
 	metrics *m = malloc(sizeof(metrics));
 	*m = (metrics){0};
-	if(mode == (0x1)){
-		//_free_buddy(NULL, 1); //force coalesce blocks
-		count_holes_buddy(trees[handle], m);
+	switch(memalloc_mode[handle]){
+		case BUDDY:
+			//_free_buddy(NULL, 1); //force coalesce blocks
+			count_holes_buddy(trees[handle], m);
+			break;
+		default:
+			
+			break;
 	}
 	print_memtree(trees[handle], 0);
 	if(m->num_free == 0){printf("0 wasted bytes, incrementing to 1 to avoid division by 0 error during print\n"); m->num_free = 1;}
