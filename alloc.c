@@ -640,7 +640,7 @@ void print_min(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
  
 void print_max(unsigned int *free_holes, unsigned int *taken_holes, metrics *m){
  	unsigned int i;
- 	unsigned int max = -1;
+ 	unsigned int max = 0;
  	for(i = 0; i < m->num_free; i++){
  		if(free_holes[i] > max) max = free_holes[i];
  	}
